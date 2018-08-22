@@ -90,14 +90,9 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
 
-    public function deleteAction(string $token): JsonResponse
+    public function deleteAction(int $id): JsonResponse
     {
-        $id = $this->redis->getData($token);
-        if (!$id) {
-            return new JsonResponse('Token is invalid', Response::HTTP_BAD_REQUEST);
-        }
-
-        $entity = $this->getRepository()->find($id);
+        $entity = $this->findEntityById($id);
 
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
