@@ -6,10 +6,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RedisService
 {
-    const ADMIN_TOKEN_KEY = 'adminToken_';
-    const SESSION_DATA_KEY = 'sessionData_';
-    const KNOWN_USER_SESSIONS_KEY = 'knownSessions_';
-
     const ADMIN_TOKEN_TTL = 86400;
 
     /**
