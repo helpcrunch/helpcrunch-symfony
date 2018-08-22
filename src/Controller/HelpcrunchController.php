@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
+    const DEFAULT_PAGINATION_LIMIT = 50;
+
     /**
      * @var string
      */
@@ -38,6 +40,27 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
     /**
      * @param Request $request
+     * @return array
+     */
+    public function cgetAction(Request $request): array
+    {
+        $offset = $request->query->getInt('offset', 1);
+        $limit = $request->query->getInt('limit', self::DEFAULT_PAGINATION_LIMIT);
+
+        return $this->getRepository()->findEntities($offset, $limit);
+    }
+
+    /**
+     * @param int $id
+     * @return null|object
+     */
+    public function getAction(int $id)
+    {
+        return $this->findEntityById($id);
+    }
+
+    /**
+     * @param Request $request
      * @return JsonResponse
      * @throws \Exception
      */
@@ -45,11 +68,10 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $entity = $this->createEntity($request);
 
-        $token = $entity->generateToken();
+        $serializer = SerializerBuilder::create()->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy());
+        $entity = $serializer->build()->toArray($entity);
 
-        $this->redis->pushData($token, $entity->__get('id'));
-
-        return new JsonResponse($token, JsonResponse::HTTP_CREATED);
+        return new JsonResponse($entity, JsonResponse::HTTP_CREATED);
     }
 
     public function putAction(Request $request, int $id): JsonResponse
@@ -78,13 +100,6 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
 
-        $this->redis->delete($token);
-        if (!empty($sessionData = $this->redis->getArrayData($this->redis::SESSION_DATA_KEY . $token))) {
-            foreach ($sessionData as $field => $value) {
-                $this->redis->deleteArrayData($this->redis::SESSION_DATA_KEY . $token, $field);
-            }
-        }
-
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
@@ -96,10 +111,8 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     protected function getErrors(FormInterface $form): array
     {
         $errors = [];
-        foreach ($form as $child) {
-            foreach ($child->getErrors(true) as $error) {
-                $errors[$child->getName()] = $error->getMessage();
-            }
+        foreach ($form->getErrors(true) as $child) {
+            $errors[$child->getOrigin()->getName()] = $child->getMessage();
         }
 
         return $errors;
