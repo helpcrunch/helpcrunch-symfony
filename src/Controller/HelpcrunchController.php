@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class BaseController extends FOSRestController implements ClassResourceInterface
+abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * @var string

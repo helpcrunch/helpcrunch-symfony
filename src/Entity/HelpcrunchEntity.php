@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class BaseEntity
+abstract class HelpcrunchEntity
 {
     use GetterSetterTrait;
 

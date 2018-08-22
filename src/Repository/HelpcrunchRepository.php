@@ -5,7 +5,7 @@ namespace Helpcrunch\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-abstract class BaseRepository extends ServiceEntityRepository
+abstract class HelpcrunchRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry, string $entityClass)
     {
