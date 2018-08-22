@@ -14,11 +14,10 @@ abstract class HelpcrunchEntity
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
      * @var int
      */
     protected $id;
 
     abstract public function getFormType(): string;
-
-    abstract protected function generateToken(): string;
 }
