@@ -2,8 +2,8 @@
 
 namespace Helpcrunch\Controller;
 
-use App\Entity\BaseEntity;
-use App\Service\RedisService;
+use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Service\RedisService;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -140,7 +140,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return $entity;
     }
 
-    protected function getNewEntity(): BaseEntity
+    protected function getNewEntity(): HelpcrunchEntity
     {
         return new static::$entityClassName;
     }
