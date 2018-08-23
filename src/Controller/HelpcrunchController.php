@@ -73,7 +73,19 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
      */
     public function postAction(Request $request): JsonResponse
     {
-        $entity = $this->createEntity($request);
+        $entity = new static::$entityClassName;
+
+        $form = $this->checkDataIsValid($request, $entity);
+        if (!$form['valid']) {
+            return new JsonResponse($form['errors'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $entity = $form['entity'];
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        // Get entity from DB with all fields
+        $entity = $this->findEntityById($entity->__get('id'));
 
         $serializer = SerializerBuilder::create()->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy());
         $entity = $serializer->build()->toArray($entity);
@@ -135,27 +147,6 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
             'valid' => true,
             'entity' => $form->getData(),
         ];
-    }
-
-    protected function createEntity(Request $request): object
-    {
-        if (!($entity = $this->getRepository()->find($request->request->get('id')))) {
-            $entity = $this->getNewEntity();
-
-            $form = $this->checkDataIsValid($request, $entity);
-            if (!$form['valid']) {
-                return new JsonResponse($form['errors'], Response::HTTP_BAD_REQUEST);
-            }
-
-            $entity = $form['entity'];
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-
-            // Get entity from DB with all fields
-            $entity = $this->findEntityById($entity->__get('id'));
-        }
-
-        return $entity;
     }
 
     protected function findEntityById(int $id): object
