@@ -150,6 +150,9 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
             $entity = $form['entity'];
             $this->entityManager->persist($entity);
             $this->entityManager->flush();
+
+            // Get entity from DB with all fields
+            $entity = $this->findEntityById($entity->__get('id'));
         }
 
         return $entity;
