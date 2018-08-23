@@ -25,7 +25,7 @@ abstract class AbstractUniqueValueValidator extends ConstraintValidator
             throw new UnexpectedTypeException('Value can not be empty.', 'string');
         }
 
-        if ($this->checkValueExists($value)) {
+        if ($this->checkValueExists($value, $constraint)) {
             $this->context->buildViolation($constraint->message)
                 ->atPath($this->getPath())
                 ->addViolation();
