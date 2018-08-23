@@ -3,7 +3,6 @@
 namespace Helpcrunch\Validator\Constraints\UniqueValues;
 
 use Symfony\Component\Validator\Constraint;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @Annotation
@@ -15,14 +14,17 @@ class UniqueValue extends Constraint
      */
     protected $entityClass;
 
+    /**
+     * @var string $message
+     */
+    public $message = 'Value is already in use.';
+
     public function __construct($entityClass, $options = null)
     {
         $this->entityClass = $entityClass;
 
         parent::__construct($options);
     }
-
-    public $message = 'Value is already in use.';
 
     public function getEntityClass(): string
     {
