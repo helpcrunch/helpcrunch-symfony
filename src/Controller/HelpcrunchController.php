@@ -25,6 +25,11 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     public static $entityClassName;
 
     /**
+     * @var array
+     */
+    public static $unauthorizedMethods = [];
+
+    /**
      * @var EntityManagerInterface
      */
     protected $entityManager;
