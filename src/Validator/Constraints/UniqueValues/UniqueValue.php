@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator\Constraints\UniqueValues;
+namespace Helpcrunch\Validator\Constraints\UniqueValues;
 
 use Symfony\Component\Validator\Constraint;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -8,7 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 /**
  * @Annotation
  */
-class UniqueEmail extends Constraint
+class UniqueValue extends Constraint
 {
     /**
      * @var string $entityClass
