@@ -155,6 +155,16 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return $entity;
     }
 
+    protected function findEntityById(int $id): object
+    {
+        $entity = $this->getRepository()->find($id);
+        if (!$entity) {
+            throw new NotFoundHttpException();
+        }
+
+        return $entity;
+    }
+
     protected function getNewEntity(): HelpcrunchEntity
     {
         return new static::$entityClassName;
