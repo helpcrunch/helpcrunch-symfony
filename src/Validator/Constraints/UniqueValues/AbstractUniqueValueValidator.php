@@ -32,7 +32,7 @@ abstract class AbstractUniqueValueValidator extends ConstraintValidator
         }
     }
 
-    abstract protected function checkValueExists(string $value);
+    abstract protected function checkValueExists(string $value, Constraint $constraint);
 
     abstract protected function getPath(): string;
 }
