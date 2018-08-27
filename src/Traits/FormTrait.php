@@ -2,6 +2,8 @@
 
 namespace Helpcrunch\Traits;
 
+use Symfony\Component\Form\FormInterface;
+
 trait FormTrait
 {
     protected function getErrors(FormInterface $form): array
