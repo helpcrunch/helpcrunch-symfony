@@ -54,7 +54,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
      */
     public function cgetAction(Request $request): array
     {
-        $offset = $request->query->getInt('offset', 1);
+        $offset = $request->query->getInt('offset', 0);
         $limit = $request->query->getInt('limit', self::DEFAULT_PAGINATION_LIMIT);
 
         return $this->getRepository()->findEntities($offset, $limit);
