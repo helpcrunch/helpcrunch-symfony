@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use Helpcrunch\Traits\FormTrait;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,8 @@ use JMS\Serializer\SerializerBuilder;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
+    use FormTrait;
+
     const DEFAULT_PAGINATION_LIMIT = 50;
 
     /**
@@ -75,7 +78,9 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $entity = new static::$entityClassName;
 
-        $form = $this->checkDataIsValid($request, $entity);
+        $form = $this->createForm($entity->getFormType(), $entity);
+
+        $form = $this->checkDataIsValid($request, $form);
         if (!$form['valid']) {
             return new JsonResponse($form['errors'], Response::HTTP_BAD_REQUEST);
         }
@@ -85,7 +90,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->entityManager->flush();
 
         // Get entity from DB with all fields
-        $entity = $this->findEntityById($entity->__get('id'));
+        $entity = $this->findEntityById($entity->id);
 
         $serializer = SerializerBuilder::create()->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy());
         $entity = $serializer->build()->toArray($entity);
@@ -120,33 +125,6 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     protected function getRepository(): ObjectRepository
     {
         return $this->getDoctrine()->getRepository(static::$entityClassName);
-    }
-
-    protected function getErrors(FormInterface $form): array
-    {
-        $errors = [];
-        foreach ($form->getErrors(true) as $child) {
-            $errors[$child->getOrigin()->getName()] = $child->getMessage();
-        }
-
-        return $errors;
-    }
-
-    protected function checkDataIsValid(Request $request, $entity): array
-    {
-        $form = $this->createForm($entity->getFormType(), $entity);
-        $form->submit($request->request->all());
-        if (!$form->isValid()) {
-            return [
-                'valid' => false,
-                'errors' => $this->getErrors($form),
-            ];
-        }
-
-        return [
-            'valid' => true,
-            'entity' => $form->getData(),
-        ];
     }
 
     protected function findEntityById(int $id): object
