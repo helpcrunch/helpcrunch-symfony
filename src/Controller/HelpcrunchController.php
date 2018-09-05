@@ -98,7 +98,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
     public function putAction(Request $request, int $id): JsonResponse
     {
-        $entity = $this->getRepository()->find($id);
+        $entity = $this->findEntityById($id);
 
         $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
         if (!$form['valid']) {
