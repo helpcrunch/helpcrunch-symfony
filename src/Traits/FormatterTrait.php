@@ -18,4 +18,11 @@ trait FormatterTrait
 
         return $data;
     }
+
+    protected function getEntityClassname(string $entityClass): string
+    {
+        $classParts = explode('\\', $entityClass);
+
+        return end($classParts);
+    }
 }
