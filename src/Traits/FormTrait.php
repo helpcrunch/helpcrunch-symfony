@@ -3,6 +3,7 @@
 namespace Helpcrunch\Traits;
 
 use Helpcrunch\Type\HelpcrunchType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 
 trait FormTrait
@@ -17,9 +18,8 @@ trait FormTrait
         return $errors;
     }
 
-    protected function checkDataIsValid(array $data, HelpcrunchType $form, bool $isNewEntity = true): array
+    protected function checkDataIsValid(array $data, FormInterface $form): array
     {
-        $form->setIsNewEntity($isNewEntity);
         $form->submit($data);
         if (!$form->isValid()) {
             return [
