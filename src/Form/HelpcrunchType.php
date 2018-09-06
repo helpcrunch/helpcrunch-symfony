@@ -11,7 +11,7 @@ class HelpcrunchType extends AbstractType
     /**
      * @var bool
      */
-    private $isNewEntity = true;
+    protected $isNewEntity = true;
 
     public function setIsNewEntity(bool $isNewEntity): self
     {
