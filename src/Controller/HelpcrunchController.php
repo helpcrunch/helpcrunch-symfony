@@ -100,7 +100,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $entity = $this->findEntityById($id);
 
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
+        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity), false);
         if (!$form['valid']) {
             return new JsonResponse($form['errors'], Response::HTTP_BAD_REQUEST);
         }
