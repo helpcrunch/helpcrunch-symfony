@@ -15,13 +15,19 @@ class UniqueValue extends Constraint
     protected $entityClass;
 
     /**
+     * @var bool $isNewEntity
+     */
+    protected $isNewEntity = true;
+
+    /**
      * @var string $message
      */
     public $message = 'Value is already in use.';
 
-    public function __construct($entityClass, $options = null)
+    public function __construct(string $entityClass, bool $isNewEntity, $options = null)
     {
         $this->entityClass = $entityClass;
+        $this->isNewEntity = $isNewEntity;
 
         parent::__construct($options);
     }
@@ -29,5 +35,10 @@ class UniqueValue extends Constraint
     public function getEntityClass(): string
     {
         return $this->entityClass;
+    }
+
+    public function isNewEntity(): bool
+    {
+        return $this->isNewEntity;
     }
 }

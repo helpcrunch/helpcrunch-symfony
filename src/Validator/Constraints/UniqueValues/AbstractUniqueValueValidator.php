@@ -19,13 +19,13 @@ abstract class AbstractUniqueValueValidator extends ConstraintValidator
         $this->entityManager = $entityManager;
     }
 
-    public function validate($value, Constraint $constraint)
+    public function validate($value, UniqueValue $constraint)
     {
         if ($value === null || $value == '') {
             throw new UnexpectedTypeException('Value can not be empty.', 'string');
         }
 
-        if ($this->checkValueExists($value, $constraint)) {
+        if ($this->checkValueExists($value, $constraint) && $constraint->isNewEntity()) {
             $this->context->buildViolation($constraint->message)
                 ->atPath($this->getPath())
                 ->addViolation();
