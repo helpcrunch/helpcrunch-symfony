@@ -1,4 +1,7 @@
 {
   "name": "helpcrunch/helpcrunch-symfony",
-  "version": "master"
+  "version": "master",
+  "require": {
+    "php": ">=7.2"
+  }
 }
