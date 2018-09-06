@@ -8,15 +8,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HelpcrunchType extends AbstractType
 {
-    /**
-     * @var bool
-     */
-    protected $isNewEntity = true;
-
-    public function setIsNewEntity(bool $isNewEntity): self
+    protected function getDefaultOptions(): array
     {
-        $this->isNewEntity = $isNewEntity;
-
-        return $this;
+        return [
+            'allow_extra_fields' => true,
+            'csrf_protection' => false,
+            'isNewEntity' => true,
+        ];
     }
 }
