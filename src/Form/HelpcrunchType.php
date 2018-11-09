@@ -13,7 +13,6 @@ class HelpcrunchType extends AbstractType
         return [
             'allow_extra_fields' => true,
             'csrf_protection' => false,
-            'isNewEntity' => true,
         ];
     }
 }

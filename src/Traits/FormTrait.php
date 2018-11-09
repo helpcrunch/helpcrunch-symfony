@@ -20,7 +20,7 @@ trait FormTrait
 
     protected function checkDataIsValid(array $data, FormInterface $form): array
     {
-        $form->submit($data);
+        $form->submit($data, false);
         if (!$form->isValid()) {
             return [
                 'valid' => false,
