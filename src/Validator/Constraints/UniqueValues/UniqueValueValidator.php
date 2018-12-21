@@ -47,7 +47,8 @@ class UniqueValueValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, UniqueValue::class);
         }
 
-        return $this->entityManager->getRepository($constraint->getEntityClass())
+        return $this->entityManager
+            ->getRepository($constraint->getEntityClass())
             ->findOneBy([$this->getPath() => $value]);
     }
 

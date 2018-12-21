@@ -29,8 +29,12 @@ class UniqueValue extends Constraint
      */
     public $message = 'Value is already in use.';
 
-    public function __construct(string $entityClass, bool $isNewEntity, string $validatedField = null, $options = null)
-    {
+    public function __construct(
+        string $entityClass,
+        bool $isNewEntity,
+        string $validatedField = null,
+        $options = null
+    ) {
         $this->entityClass = $entityClass;
         $this->isNewEntity = $isNewEntity;
         $this->validatedField = $validatedField;
