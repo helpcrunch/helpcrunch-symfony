@@ -17,7 +17,7 @@ class UniqueValueValidator extends ConstraintValidator
     /**
      * @var null|string $validatedField
      */
-    protected $validatedField = null;
+    protected $validatedField;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -30,13 +30,9 @@ class UniqueValueValidator extends ConstraintValidator
             throw new UnexpectedTypeException('Value can not be empty.', 'string');
         }
 
-        if ($constraint instanceof UniqueValue) {
-            $this->validatedField = $constraint->getValidatedField();
-        }
-
         if ($this->checkValueExists($value, $constraint) && $constraint->isNewEntity()) {
             $this->context->buildViolation($constraint->message)
-                ->atPath($this->getPath())
+                ->atPath($constraint->getValidatedField())
                 ->addViolation();
         }
     }
@@ -49,14 +45,6 @@ class UniqueValueValidator extends ConstraintValidator
 
         return $this->entityManager
             ->getRepository($constraint->getEntityClass())
-            ->findOneBy([$this->getPath() => $value]);
-    }
-
-    /**
-     * @return null|string
-     */
-    protected function getPath()
-    {
-        return $this->validatedField;
+            ->findOneBy([$constraint->getValidatedField() => $value]);
     }
 }
