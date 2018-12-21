@@ -32,7 +32,7 @@ class UniqueValue extends Constraint
     public function __construct(
         string $entityClass,
         bool $isNewEntity,
-        string $validatedField = null,
+        string $validatedField,
         $options = null
     ) {
         $this->entityClass = $entityClass;
@@ -52,7 +52,7 @@ class UniqueValue extends Constraint
         return $this->isNewEntity;
     }
 
-    public function getValidatedField()
+    public function getValidatedField(): string
     {
         return $this->validatedField;
     }
