@@ -7,12 +7,17 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-abstract class AbstractUniqueValueValidator extends ConstraintValidator
+class UniqueValueValidator extends ConstraintValidator
 {
     /**
      * @var EntityManagerInterface $entityManager
      */
     protected $entityManager;
+
+    /**
+     * @var null|string $validatedField
+     */
+    protected $validatedField = null;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -21,8 +26,12 @@ abstract class AbstractUniqueValueValidator extends ConstraintValidator
 
     public function validate($value, Constraint $constraint)
     {
-        if ($value === null || $value == '') {
+        if (empty($value) && (!method_exists($constraint, 'isNewEntity') || $constraint->isNewEntity())) {
             throw new UnexpectedTypeException('Value can not be empty.', 'string');
+        }
+
+        if ($constraint instanceof UniqueValue) {
+            $this->validatedField = $constraint->getValidatedField();
         }
 
         if ($this->checkValueExists($value, $constraint) && $constraint->isNewEntity()) {
@@ -32,7 +41,22 @@ abstract class AbstractUniqueValueValidator extends ConstraintValidator
         }
     }
 
-    abstract protected function checkValueExists(string $value, Constraint $constraint);
+    protected function checkValueExists(string $value, Constraint $constraint)
+    {
+        if ((!$constraint instanceof UniqueValue)) {
+            throw new UnexpectedTypeException($constraint, UniqueValue::class);
+        }
 
-    abstract protected function getPath(): string;
+        return $this->entityManager
+            ->getRepository($constraint->getEntityClass())
+            ->findOneBy([$this->getPath() => $value]);
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function getPath()
+    {
+        return $this->validatedField;
+    }
 }
