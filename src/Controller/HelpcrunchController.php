@@ -50,6 +50,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $this->entityManager = $entityManager;
         $this->redis = $redis;
+        $this->redis->connect();
     }
 
     /**
