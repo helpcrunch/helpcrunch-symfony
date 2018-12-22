@@ -32,7 +32,8 @@ class RedisService
     public function connect(string $host = null, int $port = 6379)
     {
         $this->redis->connect(
-            $host ?? $this->container->getParameter('redis_port'), $port ?? $this->container->getParameter('redis_port')
+            $host ?? $this->container->getParameter('redis_port'),
+            $port ?? $this->container->getParameter('redis_port')
         );
     }
 

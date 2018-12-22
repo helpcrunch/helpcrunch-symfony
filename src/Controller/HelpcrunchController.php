@@ -154,10 +154,8 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
-        $arguments = [
-            'command' => $command,
-            $options,
-        ];
+        $arguments = ['command' => $command];
+        $arguments = array_merge($arguments, $options);
 
         $input = new ArrayInput($arguments);
 
