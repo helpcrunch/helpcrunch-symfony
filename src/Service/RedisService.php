@@ -29,10 +29,10 @@ class RedisService
         $this->ttl = $container->getParameter('redis_ttl');
     }
 
-    public function connect(string $host = null, int $port = 6379)
+    public function connect(string $host = null, int $port = null): void
     {
         $this->redis->connect(
-            $host ?? $this->container->getParameter('redis_port'),
+            $host ?? $this->container->getParameter('redis_host'),
             $port ?? $this->container->getParameter('redis_port')
         );
     }
@@ -89,5 +89,10 @@ class RedisService
     public function removeFromList($key, $value): void
     {
         $this->redis->lRem($key, $value, 0);
+    }
+
+    public function getAllKeys(): array
+    {
+        return $this->redis->keys('*');
     }
 }
