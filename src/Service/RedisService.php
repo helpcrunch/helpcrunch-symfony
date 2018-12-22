@@ -8,6 +8,8 @@ class RedisService
 {
     const ADMIN_TOKEN_TTL = 86400;
 
+    private $container;
+
     /**
      * @var \Redis
      */
@@ -20,10 +22,18 @@ class RedisService
 
     public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
+
         $this->redis = new \Redis();
-        $this->redis->connect($container->getParameter('redis_host'), $container->getParameter('redis_port'));
 
         $this->ttl = $container->getParameter('redis_ttl');
+    }
+
+    public function connect(string $host = null, int $port = 6379)
+    {
+        $this->redis->connect(
+            $host ?? $this->container->getParameter('redis_port'), $port ?? $this->container->getParameter('redis_port')
+        );
     }
 
     public function pushData($key, $data, int $ttl = null): void

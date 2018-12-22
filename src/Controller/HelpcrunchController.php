@@ -15,6 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializerBuilder;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
@@ -143,5 +147,21 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     protected function createNewForm($entity)
     {
         return $this->createForm($entity->getFormType(), $entity);
+    }
+
+    protected function runCommand(KernelInterface $kernel, string $command, array $options): void
+    {
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $arguments = [
+            'command' => $command,
+            $options,
+        ];
+
+        $input = new ArrayInput($arguments);
+
+        $output = new ConsoleOutput();
+        $application->run($input, $output);
     }
 }
