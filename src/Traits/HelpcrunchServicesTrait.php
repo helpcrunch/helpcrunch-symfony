@@ -7,7 +7,7 @@ use Helpcrunch\Service\EmailSenderService;
 use Helpcrunch\Service\RedisService;
 use Helpcrunch\Service\TokenValidationService;
 
-trait ServicesTrait
+trait HelpcrunchServicesTrait
 {
     public function getEntityManager(): EntityManagerInterface
     {
