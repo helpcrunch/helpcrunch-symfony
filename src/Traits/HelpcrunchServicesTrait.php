@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits;
+namespace Helpcrunch\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Helpcrunch\Service\EmailSenderService;
