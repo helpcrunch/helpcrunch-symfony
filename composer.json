@@ -2,6 +2,7 @@
   "name": "helpcrunch/helpcrunch-symfony",
   "version": "master",
   "require": {
-    "php": ">=7.2"
+    "php": ">=7.2",
+    "symfony/http-foundation": "*"
   }
 }
