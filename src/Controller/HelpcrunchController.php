@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Helpcrunch\Traits\FormTrait;
+use Helpcrunch\Traits\HelpcrunchServicesTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +24,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
-    use FormTrait;
+    use FormTrait, HelpcrunchServicesTrait;
 
     const DEFAULT_PAGINATION_LIMIT = 50;
 
@@ -37,6 +39,11 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     public static $unauthorizedMethods = [];
 
     /**
+     * @var ContainerInterface $container
+     */
+    protected $container;
+
+    /**
      * @var EntityManagerInterface
      */
     protected $entityManager;
@@ -46,10 +53,13 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
      */
     protected $redis;
 
-    public function __construct(EntityManagerInterface $entityManager, RedisService $redis)
+    public function __construct(ContainerInterface $container)
     {
-        $this->entityManager = $entityManager;
-        $this->redis = $redis;
+        $this->container = $container;
+
+        $this->entityManager = $this->getEntityManager();
+
+        $this->redis = $this->getRedisService();
         $this->redis->connect();
     }
 
