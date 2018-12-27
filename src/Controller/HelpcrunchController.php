@@ -3,11 +3,11 @@
 namespace Helpcrunch\Controller;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
-use Helpcrunch\InnerErrorCodes;
 use Helpcrunch\Repository\HelpcrunchRepository;
 use Helpcrunch\Response\EntitiesBatchResponse;
 use Helpcrunch\Response\EntityResponse;
 use Helpcrunch\Response\ErrorResponse;
+use Helpcrunch\Response\InnerErrorCodes;
 use Helpcrunch\Response\SuccessResponse;
 use Helpcrunch\Service\RedisService;
 use Doctrine\Common\Persistence\ObjectRepository;
@@ -81,7 +81,12 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
         $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
         if (!$form['valid']) {
-            return new ErrorResponse('validation error(s)', InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED, $form['errors']);
+            return new ErrorResponse(
+                'validation error(s)',
+                InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
+                ErrorResponse::HTTP_BAD_REQUEST,
+                $form['errors']
+            );
         }
 
         $entity = $form['entity'];
@@ -96,7 +101,12 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $entity = $this->findEntityById($id);
         $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
         if (!$form['valid']) {
-            return new ErrorResponse('validation error(s)', InnerErrorCodes::PUT_ENTITY_VALIDATION_FAILED, $form['errors']);
+            return new ErrorResponse(
+                'validation error(s)',
+                InnerErrorCodes::PUT_ENTITY_VALIDATION_FAILED,
+                ErrorResponse::HTTP_BAD_REQUEST,
+                $form['errors']
+            );
         }
         $this->entityManager->flush();
 

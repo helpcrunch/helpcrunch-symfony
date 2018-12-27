@@ -8,7 +8,8 @@ use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class SuccessResponse extends JsonResponse {
+class SuccessResponse extends JsonResponse
+{
     public function __construct(array $data = [], $message = null, int $status = self::HTTP_OK)
     {
         $responseData = $data;
