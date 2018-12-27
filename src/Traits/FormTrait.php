@@ -2,8 +2,6 @@
 
 namespace Helpcrunch\Traits;
 
-use Helpcrunch\Type\HelpcrunchType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 
 trait FormTrait

@@ -2,7 +2,14 @@
   "name": "helpcrunch/helpcrunch-symfony",
   "version": "master",
   "require": {
+    "doctrine/doctrine-bundle": "*",
+    "doctrine/orm": "*",
+    "doctrine/persistence": "*",
+    "ext-zmq": "*",
+    "ext-redis": "*",
+    "friendsofsymfony/rest-bundle": "^2.3",
+    "jms/serializer": "*",
     "php": ">=7.2",
-    "symfony/http-foundation": "*"
+    "symfony/validator": "*"
   }
 }

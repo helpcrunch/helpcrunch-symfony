@@ -4,7 +4,11 @@ namespace Helpcrunch\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Helpcrunch\Entity\HelpcrunchEntity;
 
+/**
+ * @method HelpcrunchEntity find(int $id)
+ */
 abstract class HelpcrunchRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry, string $entityClass)
