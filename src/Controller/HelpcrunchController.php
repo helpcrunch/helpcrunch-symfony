@@ -99,7 +99,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     public function putAction(Request $request, int $id): JsonResponse
     {
         $entity = $this->findEntityById($id);
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
+        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity, false));
         if (!$form['valid']) {
             return new ErrorResponse(
                 'validation error(s)',
@@ -146,9 +146,9 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new static::$entityClassName;
     }
 
-    protected function createNewForm(HelpcrunchEntity $entity): FormInterface
+    protected function createNewForm(HelpcrunchEntity $entity, bool $isNewEntity = false): FormInterface
     {
-        return $this->createForm($entity->getFormType(), $entity);
+        return $this->createForm($entity->getFormType(), $entity, ['is_new_entity' => $isNewEntity]);
     }
 
     protected function runCommand(KernelInterface $kernel, string $command, array $options): void
