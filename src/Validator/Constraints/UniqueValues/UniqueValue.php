@@ -15,9 +15,9 @@ class UniqueValue extends Constraint
     protected $entityClass;
 
     /**
-     * @var bool $isNewEntity
+     * @var bool|int $entityId
      */
-    protected $isNewEntity = true;
+    protected $entityId = false;
 
     /**
      * @var string $validatedField
@@ -31,12 +31,12 @@ class UniqueValue extends Constraint
 
     public function __construct(
         string $entityClass,
-        bool $isNewEntity,
+        bool $entityId,
         string $validatedField,
         $options = null
     ) {
         $this->entityClass = $entityClass;
-        $this->isNewEntity = $isNewEntity;
+        $this->entityId = $entityId;
         $this->validatedField = $validatedField;
 
         parent::__construct($options);
@@ -47,9 +47,9 @@ class UniqueValue extends Constraint
         return $this->entityClass;
     }
 
-    public function isNewEntity(): bool
+    public function getEntityId()
     {
-        return $this->isNewEntity;
+        return $this->entityId;
     }
 
     public function getValidatedField(): string
