@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\MappedSuperclass
+ * @property int $id
  */
 abstract class HelpcrunchEntity
 {

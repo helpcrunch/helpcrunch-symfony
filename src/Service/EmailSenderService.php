@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Service;
 
+/** Move interface to bundle */
 use App\Notification\NotificationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

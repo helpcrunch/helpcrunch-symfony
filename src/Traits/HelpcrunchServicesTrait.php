@@ -7,6 +7,9 @@ use Helpcrunch\Service\EmailSenderService;
 use Helpcrunch\Service\RedisService;
 use Helpcrunch\Service\TokenValidationService;
 
+/**
+ * @property object container
+ */
 trait HelpcrunchServicesTrait
 {
     public function getEntityManager(): EntityManagerInterface

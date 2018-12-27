@@ -4,19 +4,19 @@ namespace Helpcrunch\Response;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ErrorResponse extends JsonResponse {
-    /**
-     * @param string|array $errorData
-     * @param int|null $status
-     * @param int|null $innerErrorCode
-     */
-    public function __construct($errorData, int $status = self::HTTP_BAD_REQUEST, int $innerErrorCode = null)
+class ErrorResponse extends JsonResponse
+{
+    public function __construct(string $message, string $innerErrorCode = null, int $status = self::HTTP_BAD_REQUEST, $errors = [])
     {
         $responseData = [
-            'error' => $errorData,
+            'message' => $message,
+            'success' => false,
         ];
         if ($innerErrorCode) {
             $responseData['code'] = $innerErrorCode;
+        }
+        if ($errors) {
+            $responseData['errors'] = $errors;
         }
 
         parent::__construct($responseData, $status);

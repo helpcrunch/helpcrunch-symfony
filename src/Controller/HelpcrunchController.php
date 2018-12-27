@@ -3,6 +3,12 @@
 namespace Helpcrunch\Controller;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Repository\HelpcrunchRepository;
+use Helpcrunch\Response\EntitiesBatchResponse;
+use Helpcrunch\Response\EntityResponse;
+use Helpcrunch\Response\ErrorResponse;
+use Helpcrunch\Response\InnerErrorCodes;
+use Helpcrunch\Response\SuccessResponse;
 use Helpcrunch\Service\RedisService;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,8 +19,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\SerializerBuilder;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -53,16 +58,12 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->redis->connect();
     }
 
-    /**
-     * @param Request $request
-     * @return array
-     */
-    public function cgetAction(Request $request): array
+    public function cgetAction(Request $request): SuccessResponse
     {
         $offset = $request->query->getInt('offset', 0);
         $limit = $request->query->getInt('limit', self::DEFAULT_PAGINATION_LIMIT);
 
-        return $this->getRepository()->findEntities($offset, $limit);
+        return new EntitiesBatchResponse($this->getRepository()->findEntities($offset, $limit));
     }
 
     /**
@@ -71,48 +72,45 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
      */
     public function getAction(int $id)
     {
-        return $this->findEntityById($id);
+        return new EntityResponse($this->findEntityById($id));
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
-     */
     public function postAction(Request $request): JsonResponse
     {
         $entity = new static::$entityClassName;
 
         $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
         if (!$form['valid']) {
-            return new JsonResponse($form['errors'], Response::HTTP_BAD_REQUEST);
+            return new ErrorResponse(
+                'validation error(s)',
+                InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
+                ErrorResponse::HTTP_BAD_REQUEST,
+                $form['errors']
+            );
         }
 
         $entity = $form['entity'];
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        // Get entity from DB with all fields
-        $entity = $this->findEntityById($entity->id);
-
-        $serializer = SerializerBuilder::create()->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy());
-        $entity = $serializer->build()->toArray($entity);
-
-        return new JsonResponse($entity, JsonResponse::HTTP_CREATED);
+        return new EntityResponse($this->findEntityById($entity->id), 'entity created', Response::HTTP_CREATED);
     }
 
     public function putAction(Request $request, int $id): JsonResponse
     {
         $entity = $this->findEntityById($id);
-
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity), false);
+        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
         if (!$form['valid']) {
-            return new JsonResponse($form['errors'], Response::HTTP_BAD_REQUEST);
+            return new ErrorResponse(
+                'validation error(s)',
+                InnerErrorCodes::PUT_ENTITY_VALIDATION_FAILED,
+                ErrorResponse::HTTP_BAD_REQUEST,
+                $form['errors']
+            );
         }
-
         $this->entityManager->flush();
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new EntityResponse($entity, 'entity updated');
     }
 
     public function deleteAction(int $id): JsonResponse
@@ -122,15 +120,18 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
 
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return new SuccessResponse([], 'entity deleted');
     }
 
-    protected function getRepository(): ObjectRepository
+    /**
+     * @return HelpcrunchRepository|ObjectRepository
+     */
+    protected function getRepository()
     {
         return $this->getDoctrine()->getRepository(static::$entityClassName);
     }
 
-    protected function findEntityById(int $id): object
+    protected function findEntityById(int $id): HelpcrunchEntity
     {
         $entity = $this->getRepository()->find($id);
         if (!$entity) {
@@ -145,7 +146,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new static::$entityClassName;
     }
 
-    protected function createNewForm($entity)
+    protected function createNewForm(HelpcrunchEntity $entity): FormInterface
     {
         return $this->createForm($entity->getFormType(), $entity);
     }

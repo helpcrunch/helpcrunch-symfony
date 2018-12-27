@@ -4,38 +4,24 @@ namespace Helpcrunch\Entity;
 
 trait GetterSetterTrait
 {
-    /**
-     * @param $name
-     * @return mixed
-     * @throws \Exception
-     */
-    public function __get($name)
+    public function __get(string $name)
     {
         if ($this->checkPropertyExists($name)) {
             return $this->$name;
         }
+
+        return null;
     }
 
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     * @throws \Exception
-     */
-    public function __set($name, $value)
+    public function __set(string $name, $value): self
     {
         if ($this->checkPropertyExists($name)) {
             $this->$name = $value;
-
-            return $this;
         }
+
+        return $this;
     }
 
-    /**
-     * @param string $propertyName
-     * @return bool
-     * @throws \Exception
-     */
     protected function checkPropertyExists(string $propertyName): bool
     {
         if (!property_exists($this, $propertyName)) {
