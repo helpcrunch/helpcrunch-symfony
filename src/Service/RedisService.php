@@ -95,4 +95,9 @@ class RedisService
     {
         return $this->redis->keys('*');
     }
+
+    public function getOrganizationKeys(string $organizationDomain): array
+    {
+        return $this->redis->keys($organizationDomain . '_*');
+    }
 }
