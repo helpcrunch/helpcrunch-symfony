@@ -8,6 +8,9 @@ use Helpcrunch\Entity\HelpcrunchEntity;
 
 /**
  * @method HelpcrunchEntity find(int $id)
+ * @method HelpcrunchEntity findOneBy(array $criteria, array $orderBy = null)
+ * @method HelpcrunchEntity[] findAll()
+ * @method HelpcrunchEntity[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 abstract class HelpcrunchRepository extends ServiceEntityRepository
 {

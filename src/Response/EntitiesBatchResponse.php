@@ -4,7 +4,8 @@ namespace Helpcrunch\Response;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
 
-class EntitiesBatchResponse extends SuccessResponse {
+class EntitiesBatchResponse extends SuccessResponse
+{
     /**
      * @param HelpcrunchEntity[] $entities
      * @param string|null $message
