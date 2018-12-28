@@ -30,7 +30,7 @@ class UniqueValueValidator extends ConstraintValidator
             throw new UnexpectedTypeException('Value can not be empty.', 'string');
         }
 
-        if ($this->checkValueExists($value, $constraint) && $constraint->isNewEntity()) {
+        if ($this->checkValueExists($value, $constraint)) {
             $this->context->buildViolation($constraint->message)
                 ->atPath($constraint->getValidatedField())
                 ->addViolation();
@@ -43,8 +43,14 @@ class UniqueValueValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, UniqueValue::class);
         }
 
-        return $this->entityManager
+        $entity = $this->entityManager
             ->getRepository($constraint->getEntityClass())
             ->findOneBy([$constraint->getValidatedField() => $value]);
+
+        if ($entity && ($entityId = $constraint->getEntityId())) {
+            return $entity->id != $entityId;
+        }
+
+        return $entity;
     }
 }
