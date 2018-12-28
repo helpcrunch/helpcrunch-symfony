@@ -4,7 +4,7 @@ namespace Helpcrunch\Entity;
 
 trait GetterSetterTrait
 {
-    public function __get(string $name)
+    public function __get($name)
     {
         if ($this->checkPropertyExists($name)) {
             return $this->$name;
@@ -13,7 +13,7 @@ trait GetterSetterTrait
         return null;
     }
 
-    public function __set(string $name, $value): self
+    public function __set($name, $value): self
     {
         if ($this->checkPropertyExists($name)) {
             $this->$name = $value;
