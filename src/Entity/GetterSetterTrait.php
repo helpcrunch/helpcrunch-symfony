@@ -4,6 +4,10 @@ namespace Helpcrunch\Entity;
 
 trait GetterSetterTrait
 {
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
     public function __get($name)
     {
         if ($this->checkPropertyExists($name)) {
@@ -13,7 +17,12 @@ trait GetterSetterTrait
         return null;
     }
 
-    public function __set($name, $value): self
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function __set($name, $value)
     {
         if ($this->checkPropertyExists($name)) {
             $this->$name = $value;
@@ -22,7 +31,11 @@ trait GetterSetterTrait
         return $this;
     }
 
-    protected function checkPropertyExists(string $propertyName): bool
+    /**
+     * @param string $propertyName
+     * @return bool
+     */
+    protected function checkPropertyExists(string $propertyName)
     {
         if (!property_exists($this, $propertyName)) {
             throw new \Exception('Property ' . $propertyName . ' does not exist in ' . static::class);
