@@ -17,6 +17,6 @@ class EntitiesBatchResponse extends SuccessResponse
             $entities[$key] = $this->serializeEntity($entity);
         }
 
-        parent::__construct(['entities' => $entities], $message, $status);
+        parent::__construct(['data' => $entities], $message, $status);
     }
 }
