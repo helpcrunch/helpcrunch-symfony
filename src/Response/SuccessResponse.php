@@ -14,7 +14,7 @@ class SuccessResponse extends JsonResponse
     {
         $responseData = $data;
         if ($message) {
-            $responseData = ['message' => $message];
+            $responseData['message'] = $message;
         }
         $responseData['success'] = true;
 
