@@ -14,7 +14,10 @@ class EntityResponse extends SuccessResponse
     public function __construct(HelpcrunchEntity $entity = null, $message = null, int $status = self::HTTP_OK)
     {
         $this->entity = $entity;
-        parent::__construct(['data' => $this->serializeEntity($entity)], $message, $status);
+        if (is_object($entity)) {
+            $entity = $this->serializeEntity($entity);
+        }
+        parent::__construct(['data' => $entity], $message, $status);
     }
 
     public function getEntity(): HelpcrunchEntity
