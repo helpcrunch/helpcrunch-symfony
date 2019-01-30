@@ -61,6 +61,15 @@ class RedisService
         return $this->redis->get($key);
     }
 
+    /**
+     * @param $key
+     * @return bool|int
+     */
+    public function getTimeToLive($key)
+    {
+        return $this->redis->ttl($key);
+    }
+
     public function pushArrayData($key, $data): void
     {
         $this->redis->hMset($key, $data);
