@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Traits;
 
+use Helpcrunch\Entity\HelpcrunchEntity;
 use Symfony\Component\Form\FormInterface;
 
 trait FormTrait
@@ -30,5 +31,15 @@ trait FormTrait
             'valid' => true,
             'entity' => $form->getData(),
         ];
+    }
+
+    protected function getForm(HelpcrunchEntity $entity, int $entityId = null): FormInterface
+    {
+        return $this->container->get('form.factory')->create($entity->getFormType(), $entity, ['entity_id' => $entityId]);
+    }
+
+    protected function createNewForm(HelpcrunchEntity $entity): FormInterface
+    {
+        return $this->getForm($entity, $entity->id);
     }
 }
