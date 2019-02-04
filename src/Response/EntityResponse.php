@@ -7,11 +7,16 @@ use Helpcrunch\Entity\HelpcrunchEntity;
 class EntityResponse extends SuccessResponse
 {
     /**
-     * @var HelpcrunchEntity
+     * @var array|HelpcrunchEntity|null
      */
     private $entity;
 
-    public function __construct(HelpcrunchEntity $entity = null, $message = null, int $status = self::HTTP_OK)
+    /**
+     * @param HelpcrunchEntity|array|null $entity
+     * @param string|null $message
+     * @param int $status
+     */
+    public function __construct($entity = null, $message = null, int $status = self::HTTP_OK)
     {
         $this->entity = $entity;
         if (is_object($entity)) {
@@ -20,7 +25,10 @@ class EntityResponse extends SuccessResponse
         parent::__construct(['data' => $entity], $message, $status);
     }
 
-    public function getEntity(): HelpcrunchEntity
+    /**
+     * @return array|HelpcrunchEntity|null
+     */
+    public function getEntity()
     {
         return $this->entity;
     }
