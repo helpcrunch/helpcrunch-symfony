@@ -68,7 +68,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->redis->connect();
     }
 
-    public function cgetAction(Request $request): SuccessResponse
+    public function cgetAction(Request $request): JsonResponse
     {
         $offset = $request->query->getInt('offset', 0);
         $limit = $request->query->getInt('limit', self::DEFAULT_PAGINATION_LIMIT);
