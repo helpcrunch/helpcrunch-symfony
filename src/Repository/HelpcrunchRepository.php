@@ -48,4 +48,9 @@ abstract class HelpcrunchRepository extends ServiceEntityRepository
             ->setCacheable(false)
             ->getArrayResult();
     }
+
+    public function count(array $criteria = []): int
+    {
+        return parent::count($criteria);
+    }
 }
