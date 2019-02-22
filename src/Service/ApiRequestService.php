@@ -27,7 +27,7 @@ class ApiRequestService
     private $domain;
 
     /**
-     * @var
+     * @var string
      */
     private $key;
 
