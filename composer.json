@@ -13,6 +13,7 @@
     "php": ">=7.2",
     "sentry/sentry": "^1.8",
     "symfony/form": "*",
-    "symfony/validator": "*"
+    "symfony/validator": "*",
+    "guzzlehttp/guzzle": "^6.3"
   }
 }
