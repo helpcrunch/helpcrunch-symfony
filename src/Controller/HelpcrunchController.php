@@ -14,6 +14,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Helpcrunch\Traits\FormTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -77,14 +78,20 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     }
 
     /**
+     * @Rest(requirements= {"id": "\d+"})
+     *
      * @param int $id
-     * @return null|object
+     * @return EntityResponse
      */
     public function getAction(int $id)
     {
         return new EntityResponse($this->findEntityById($id));
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function postAction(Request $request): JsonResponse
     {
         $entity = new static::$entityClassName;
@@ -106,6 +113,13 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntityResponse($this->findEntityById($entity->id), 'entity created', Response::HTTP_CREATED);
     }
 
+    /**
+     * @Rest(requirements= {"id": "\d+"})
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     public function putAction(Request $request, int $id): JsonResponse
     {
         $entity = $this->findEntityById($id);
@@ -123,6 +137,12 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntityResponse($entity, 'entity updated');
     }
 
+    /**
+     * @Rest(requirements= {"id": "\d+"})
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
     public function deleteAction(int $id): JsonResponse
     {
         $entity = $this->findEntityById($id);
