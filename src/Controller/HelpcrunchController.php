@@ -78,7 +78,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     }
 
     /**
-     * @Rest(requirements= {"id": "\d+"})
+     * @Rest\Route(requirements= {"id": "\d+"})
      *
      * @param int $id
      * @return EntityResponse
@@ -114,7 +114,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     }
 
     /**
-     * @Rest(requirements= {"id": "\d+"})
+     * @Rest\Route(requirements= {"id": "\d+"})
      *
      * @param Request $request
      * @param int $id
@@ -138,7 +138,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     }
 
     /**
-     * @Rest(requirements= {"id": "\d+"})
+     * @Rest\Route(requirements= {"id": "\d+"})
      *
      * @param int $id
      * @return JsonResponse
