@@ -40,6 +40,25 @@ class ApiRequestService
         $this->client = new Client(['headers' => $this->setHeaders()]);
     }
 
+    /**
+     * @param string $domain
+     * @param string $endpoint
+     * @param array $options
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function get(string $domain, string $endpoint, array $options = [])
+    {
+        return $this->makeRequest('get', $domain, $endpoint, $options);
+    }
+
+    /**
+     * @param string $organizationDomain
+     * @param string $endpoint
+     * @param array $data
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function post(string $organizationDomain, string $endpoint, array $data = []): ResponseInterface
     {
         return $this->makeRequest('post', $organizationDomain, $endpoint, [
@@ -47,7 +66,43 @@ class ApiRequestService
         ]);
     }
 
-    public function makeRequest(
+    /**
+     * @param string $organizationDomain
+     * @param string $endpoint
+     * @param array $data
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function put(string $organizationDomain, string $endpoint, array $data = []): ResponseInterface
+    {
+        return $this->makeRequest('put', $organizationDomain, $endpoint, [
+            RequestOptions::JSON => $data
+        ]);
+    }
+
+    /**
+     * @param string $organizationDomain
+     * @param string $endpoint
+     * @param array $data
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function delete(string $organizationDomain, string $endpoint, array $data = []): ResponseInterface
+    {
+        return $this->makeRequest('delete', $organizationDomain, $endpoint, [
+            RequestOptions::JSON => $data
+        ]);
+    }
+
+    /**
+     * @param string $method
+     * @param string $organizationDomain
+     * @param string $endpoint
+     * @param array $options
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private function makeRequest(
         string $method,
         string $organizationDomain,
         string $endpoint,

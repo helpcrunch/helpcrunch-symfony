@@ -23,10 +23,10 @@ class RedisService
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->ttl = $container->getParameter('redis_ttl');
 
         $this->redis = new \Redis();
-
-        $this->ttl = $container->getParameter('redis_ttl');
+        $this->connect();
     }
 
     public function connect(string $host = null, int $port = null): void
@@ -108,5 +108,15 @@ class RedisService
     public function getOrganizationKeys(string $organizationDomain): array
     {
         return $this->redis->keys($organizationDomain . '_*');
+    }
+
+    public function increment(string $key): void
+    {
+        $this->redis->incr($key);
+    }
+
+    public function decrement(string $key): void
+    {
+        $this->redis->decr($key);
     }
 }

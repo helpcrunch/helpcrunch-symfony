@@ -14,6 +14,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Helpcrunch\Traits\FormTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -76,10 +77,6 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntitiesBatchResponse($this->getRepository()->findEntities($offset, $limit));
     }
 
-    /**
-     * @param int $id
-     * @return null|object
-     */
     public function getAction(int $id)
     {
         return new EntityResponse($this->findEntityById($id));
