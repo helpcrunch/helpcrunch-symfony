@@ -3,8 +3,10 @@
 namespace Helpcrunch\Controller;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Helper\ParametersValidatorHelper;
 use Helpcrunch\Repository\HelpcrunchRepository;
 use Helpcrunch\Response\EntitiesBatchResponse;
+use Helpcrunch\Response\EntityNotFoundResponse;
 use Helpcrunch\Response\EntityResponse;
 use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Response\InnerErrorCodes;
@@ -14,7 +16,6 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Helpcrunch\Traits\FormTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -77,9 +78,20 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntitiesBatchResponse($this->getRepository()->findEntities($offset, $limit));
     }
 
-    public function getAction(int $id)
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getAction($id)
     {
-        return new EntityResponse($this->findEntityById($id));
+        if (!ParametersValidatorHelper::isValidId($id)) {
+            return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
+        }
+        if (!($entity = $this->getRepository()->find($id))) {
+            return new EntityNotFoundResponse(self::$entityClassName);
+        }
+
+        return new EntityResponse($entity);
     }
 
     public function postAction(Request $request): JsonResponse
@@ -100,12 +112,17 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        return new EntityResponse($this->findEntityById($entity->id), 'entity created', Response::HTTP_CREATED);
+        return new EntityResponse($this->getRepository()->find($entity->id), 'entity created', Response::HTTP_CREATED);
     }
 
-    public function putAction(Request $request, int $id): JsonResponse
+    public function putAction(Request $request, $id): JsonResponse
     {
-        $entity = $this->findEntityById($id);
+        $entityResponse = $this->getAction($id);
+        if ($entityResponse instanceof EntityResponse) {
+            $entity = $entityResponse->getEntity();
+        } else {
+            return $entityResponse;
+        }
         $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity, $id));
         if (!$form['valid']) {
             return new ErrorResponse(
@@ -120,9 +137,14 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntityResponse($entity, 'entity updated');
     }
 
-    public function deleteAction(int $id): JsonResponse
+    public function deleteAction($id): JsonResponse
     {
-        $entity = $this->findEntityById($id);
+        $entityResponse = $this->getAction($id);
+        if ($entityResponse instanceof EntityResponse) {
+            $entity = $entityResponse->getEntity();
+        } else {
+            return $entityResponse;
+        }
 
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
@@ -136,16 +158,6 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     protected function getRepository()
     {
         return $this->getDoctrine()->getRepository(static::$entityClassName);
-    }
-
-    protected function findEntityById(int $id): HelpcrunchEntity
-    {
-        $entity = $this->getRepository()->find($id);
-        if (!$entity) {
-            throw new NotFoundHttpException();
-        }
-
-        return $entity;
     }
 
     protected function getNewEntity(): HelpcrunchEntity
