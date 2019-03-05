@@ -85,7 +85,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $entity = new static::$entityClassName;
 
         $validator = new Validator();
-        if (!($entity = $validator->validate($entity, $request->request->all()))) {
+        if (!($entity = $validator->isValid($entity, $request->request->all()))) {
             return new ErrorResponse(
                 $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
