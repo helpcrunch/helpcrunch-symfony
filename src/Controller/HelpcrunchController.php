@@ -17,6 +17,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Helpcrunch\Traits\FormTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
+use Helpcrunch\Validator\Validator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -86,17 +87,15 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $entity = new static::$entityClassName;
 
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
-        if (!$form['valid']) {
+        $validator = new Validator();
+        if (!($entity = $validator->validate($entity, $request->request->all()))) {
             return new ErrorResponse(
-                'validation error(s)',
+                $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
-                ErrorResponse::HTTP_BAD_REQUEST,
-                $form['errors']
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
 
-        $entity = $form['entity'];
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
@@ -106,13 +105,13 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     public function putAction(Request $request, int $id): JsonResponse
     {
         $entity = $this->findEntityById($id);
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity, $id));
-        if (!$form['valid']) {
+
+        $validator = new Validator();
+        if (!($entity = $validator->validate($entity, $request->request->all()))) {
             return new ErrorResponse(
-                'validation error(s)',
-                InnerErrorCodes::PUT_ENTITY_VALIDATION_FAILED,
-                ErrorResponse::HTTP_BAD_REQUEST,
-                $form['errors']
+                $validator->getErrors(),
+                InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
         $this->entityManager->flush();
