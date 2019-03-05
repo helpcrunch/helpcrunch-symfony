@@ -19,6 +19,4 @@ abstract class HelpcrunchEntity
      * @var int
      */
     protected $id;
-
-    abstract public function getFormType(): string;
 }

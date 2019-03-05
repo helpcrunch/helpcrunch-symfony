@@ -14,12 +14,9 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Helpcrunch\Traits\FormTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Validator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +28,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
-    use FormTrait, HelpcrunchServicesTrait;
+    use HelpcrunchServicesTrait;
 
     const DEFAULT_PAGINATION_LIMIT = 50;
 
@@ -150,11 +147,6 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     protected function getNewEntity(): HelpcrunchEntity
     {
         return new static::$entityClassName;
-    }
-
-    protected function createNewForm(HelpcrunchEntity $entity, $entityId = false): FormInterface
-    {
-        return $this->createForm($entity->getFormType(), $entity, ['entity_id' => $entityId]);
     }
 
     protected function runCommand(KernelInterface $kernel, string $command, array $options): void
