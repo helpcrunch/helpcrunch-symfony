@@ -14,11 +14,9 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Helpcrunch\Traits\FormTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
+use Helpcrunch\Validator\Validator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +28,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
-    use FormTrait, HelpcrunchServicesTrait;
+    use HelpcrunchServicesTrait;
 
     const DEFAULT_PAGINATION_LIMIT = 50;
 
@@ -86,17 +84,15 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $entity = new static::$entityClassName;
 
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
-        if (!$form['valid']) {
+        $validator = new Validator();
+        if (!($entity = $validator->validate($entity, $request->request->all()))) {
             return new ErrorResponse(
-                'validation error(s)',
+                $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
-                ErrorResponse::HTTP_BAD_REQUEST,
-                $form['errors']
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
 
-        $entity = $form['entity'];
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
@@ -106,13 +102,13 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     public function putAction(Request $request, int $id): JsonResponse
     {
         $entity = $this->findEntityById($id);
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity, $id));
-        if (!$form['valid']) {
+
+        $validator = new Validator();
+        if (!($entity = $validator->validate($entity, $request->request->all()))) {
             return new ErrorResponse(
-                'validation error(s)',
-                InnerErrorCodes::PUT_ENTITY_VALIDATION_FAILED,
-                ErrorResponse::HTTP_BAD_REQUEST,
-                $form['errors']
+                $validator->getErrors(),
+                InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
         $this->entityManager->flush();
@@ -151,11 +147,6 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     protected function getNewEntity(): HelpcrunchEntity
     {
         return new static::$entityClassName;
-    }
-
-    protected function createNewForm(HelpcrunchEntity $entity, $entityId = false): FormInterface
-    {
-        return $this->createForm($entity->getFormType(), $entity, ['entity_id' => $entityId]);
     }
 
     protected function runCommand(KernelInterface $kernel, string $command, array $options): void
