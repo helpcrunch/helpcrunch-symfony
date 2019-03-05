@@ -23,9 +23,4 @@ class ParametersValidatorHelper
     {
         return is_object($value);
     }
-
-    public static function convertUnderscoreToCamelCase(string $string): string
-    {
-        return lcfirst(implode('', array_map('ucfirst', explode('_', $string))));
-    }
 }

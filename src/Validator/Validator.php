@@ -103,7 +103,7 @@ final class Validator
         return $class->isSubclassOf(Constraint::class);
     }
 
-    protected function collectErrors($name, ConstraintViolationListInterface $violation): void
+    private function collectErrors($name, ConstraintViolationListInterface $violation): void
     {
         if ($violation->count()) {
             $this->errors[$name] = $violation[0]->getMessage();
