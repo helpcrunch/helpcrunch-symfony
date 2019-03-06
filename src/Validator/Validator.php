@@ -94,7 +94,7 @@ final class Validator
             }
         } else {
             if (!$nullAble) {
-                $this->errors[$targetEntityField] = $targetEntityClass . ' does not exist';
+                $this->errors[$targetEntityField] = $targetEntityClass . ' can not be null';
             }
         }
 
