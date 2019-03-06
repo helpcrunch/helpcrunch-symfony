@@ -84,7 +84,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $entity = new static::$entityClassName;
 
-        $validator = new Validator();
+        $validator = new Validator($this->container);
         if (!($entity = $validator->isValid($entity, $request->request->all()))) {
             return new ErrorResponse(
                 $validator->getErrors(),
@@ -103,7 +103,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     {
         $entity = $this->findEntityById($id);
 
-        $validator = new Validator();
+        $validator = new Validator($this->container);
         if (!($entity = $validator->isValid($entity, $request->request->all()))) {
             return new ErrorResponse(
                 $validator->getErrors(),
