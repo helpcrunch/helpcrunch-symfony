@@ -45,9 +45,9 @@ class ValidationRulesCollector
                 }
 
                 if ($collector instanceof AssertionRule) {
-                    $this->validationRules[$property->getName()] = $collector->collect($reflectedAnnotation, $annotation);
+                    $this->validationRules[$property->getName()] = $collector->getRule($reflectedAnnotation, $annotation);
                 } else {
-                    $this->entitiesRelations[$property->getName()][$collector::RULE_VARIABLE] = $collector->collect($reflectedAnnotation, $annotation);
+                    $this->entitiesRelations[$property->getName()][$collector::RULE_VARIABLE] = $collector->getRule($reflectedAnnotation, $annotation);
                 }
             }
         }
