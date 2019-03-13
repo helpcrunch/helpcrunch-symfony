@@ -8,7 +8,7 @@ class EntityNotFoundResponse extends ErrorResponse
     {
         parent::__construct(
             ucfirst($entityName) . ' not found',
-            InnerErrorCodes::ENTITY_DOES_NOT_EXIST,
+            InnerErrorCodes::ENTITY_NOT_FOUND,
             self::HTTP_NOT_FOUND
         );
     }

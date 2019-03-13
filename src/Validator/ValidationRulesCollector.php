@@ -7,8 +7,6 @@ use Helpcrunch\Helper\ParametersValidatorHelper;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Helpcrunch\Validator\ValidationRule\AssertionRule;
 use Doctrine\Common\Annotations\AnnotationException;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ValidationRulesCollector
 {

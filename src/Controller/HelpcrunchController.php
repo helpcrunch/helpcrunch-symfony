@@ -81,7 +81,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
      * @param int $id
      * @return JsonResponse
      */
-    public function getAction($id)
+    public function getAction($id): JsonResponse
     {
         if (!ParametersValidatorHelper::isValidId($id)) {
             return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
@@ -112,13 +112,20 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntityResponse($this->getRepository()->find($entity->id), 'entity created', Response::HTTP_CREATED);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
+     */
     public function putAction(Request $request, $id): JsonResponse
     {
-        $entityResponse = $this->getAction($id);
-        if ($entityResponse instanceof EntityResponse) {
-            $entity = $entityResponse->getEntity();
-        } else {
-            return $entityResponse;
+        if (!ParametersValidatorHelper::isValidId($id)) {
+            return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
+        }
+        if (!($entity = $this->getRepository()->find($id))) {
+            return new EntityNotFoundResponse(self::$entityClassName);
         }
 
         $validator = new Validator($this->container);
@@ -134,13 +141,17 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntityResponse($entity, 'entity updated');
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     public function deleteAction($id): JsonResponse
     {
-        $entityResponse = $this->getAction($id);
-        if ($entityResponse instanceof EntityResponse) {
-            $entity = $entityResponse->getEntity();
-        } else {
-            return $entityResponse;
+        if (!ParametersValidatorHelper::isValidId($id)) {
+            return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
+        }
+        if (!($entity = $this->getRepository()->find($id))) {
+            return new EntityNotFoundResponse(self::$entityClassName);
         }
 
         $this->entityManager->remove($entity);
