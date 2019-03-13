@@ -9,4 +9,5 @@ class InnerErrorCodes
     const ENTITY_NOT_FOUND = 'entity_not_found';
     const INVALID_PARAMETER = 'invalid_parameter';
     const INVALID_ENTITY_ID = 'invalid_entity_id';
+    const MALFORMED_JSON = 'malformed_json';
 }
