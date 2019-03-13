@@ -104,7 +104,7 @@ final class Validator
     private function validateData(HelpcrunchEntity $entity, array $rules, array $data): void
     {
         $validation = Validation::createValidator();
-        foreach ($data as $field => $validationRule) {
+        foreach ($rules as $field => $validationRule) {
             if ($entity->id && empty($data[$field])) {
                 continue;
             }

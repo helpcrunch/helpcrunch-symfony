@@ -45,12 +45,20 @@ class ValidationRulesCollector
                 }
 
                 if ($collector instanceof AssertionRule) {
-                    $this->validationRules[$property->getName()] = $collector->getRule($reflectedAnnotation, $annotation);
+                    $rule = $collector->getRule($reflectedAnnotation, $annotation);
+                    $this->validationRules[$property->getName()][$this->getAssertionRuleName($reflectedAnnotation)] = $rule;
                 } else {
                     $this->entitiesRelations[$property->getName()][$collector::RULE_VARIABLE] = $collector->getRule($reflectedAnnotation, $annotation);
                 }
             }
         }
+    }
+
+    private function getAssertionRuleName(\ReflectionClass $reflectionClass): string
+    {
+        $constraintClassNameParts = explode('\\', $reflectionClass->getName());
+
+        return end($constraintClassNameParts);
     }
 
     public function getEntitiesRelations(): array
