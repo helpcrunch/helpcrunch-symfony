@@ -40,7 +40,7 @@ final class Validator
         $collector = new ValidationRulesCollector();
         $collector->collectRules($entity);
 
-        $data = $this->validateRelations($collector->getEntitiesRelations(), $data);
+        $data = $this->validateRelations($entity, $collector->getEntitiesRelations(), $data);
 
         $this->validateData($entity, $collector->getValidationRules(), $data);
         if (!count($this->errors)) {
@@ -55,9 +55,12 @@ final class Validator
         return $this->errors;
     }
 
-    private function validateRelations(array $relations, array $data): array
+    private function validateRelations(HelpcrunchEntity $entity, array $relations, array $data): array
     {
         foreach ($relations as $key => $relation) {
+            if ($entity->id && empty($data[$key])) {
+                continue;
+            }
             if (empty($relation['targetEntity'])) {
                 continue;
             }
