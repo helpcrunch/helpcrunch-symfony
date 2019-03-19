@@ -87,6 +87,20 @@ class ApiRequestService
      * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
+    public function patch(string $organizationDomain, string $endpoint, array $data = []): ResponseInterface
+    {
+        return $this->makeRequest('patch', $organizationDomain, $endpoint, [
+            RequestOptions::JSON => $data
+        ]);
+    }
+
+    /**
+     * @param string $organizationDomain
+     * @param string $endpoint
+     * @param array $data
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function delete(string $organizationDomain, string $endpoint, array $data = []): ResponseInterface
     {
         return $this->makeRequest('delete', $organizationDomain, $endpoint, [
