@@ -67,7 +67,7 @@ final class Validator
 
             $targetEntity = $this->getRelationIfExists(
                 $relation['targetEntity'],
-                $relation['nullable'],
+                $relation['nullable'] ?? true,
                 $key,
                 $data[$key] ?? null
             );
@@ -111,7 +111,6 @@ final class Validator
             if ($entity->id && empty($data[$field])) {
                 continue;
             }
-
             if (empty($rules[$field])) {
                 continue;
             }
