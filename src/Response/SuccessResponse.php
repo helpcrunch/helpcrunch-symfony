@@ -19,10 +19,14 @@ class SuccessResponse extends JsonResponse
         }
         $responseData['success'] = true;
 
-        parent::__construct($responseData, $status);
+        parent::__construct($this->serialize($responseData), $status);
     }
 
-    protected function serializeEntity(HelpcrunchEntity $entity): array
+    /**
+     * @param mixed[]|HelpcrunchEntity|HelpcrunchEntity[] $entity
+     * @return array
+     */
+    protected function serialize($entity): array
     {
         /** @var Serializer $serializer */
         $serializer = SerializerBuilder::create()

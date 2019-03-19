@@ -72,7 +72,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     public function cgetAction(Request $request): JsonResponse
     {
         $offset = $request->query->getInt('offset', 0);
-        $limit = $request->query->getInt('limit', self::DEFAULT_PAGINATION_LIMIT);
+        $limit = $request->query->getInt('limit', static::DEFAULT_PAGINATION_LIMIT);
 
         return new EntitiesBatchResponse($this->getRepository()->findEntities($offset, $limit));
     }
@@ -87,7 +87,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
             return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
         }
         if (!($entity = $this->getRepository()->find($id))) {
-            return new EntityNotFoundResponse(self::$entityClassName);
+            return new EntityNotFoundResponse(static::getEntityName());
         }
 
         return new EntityResponse($entity);
@@ -125,7 +125,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
             return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
         }
         if (!($entity = $this->getRepository()->find($id))) {
-            return new EntityNotFoundResponse(self::$entityClassName);
+            return new EntityNotFoundResponse(static::getEntityName());
         }
 
         $validator = new Validator($this->container);
@@ -151,7 +151,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
             return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
         }
         if (!($entity = $this->getRepository()->find($id))) {
-            return new EntityNotFoundResponse(self::$entityClassName);
+            return new EntityNotFoundResponse(static::getEntityName());
         }
 
         $this->entityManager->remove($entity);
@@ -171,6 +171,13 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     protected function getNewEntity(): HelpcrunchEntity
     {
         return new static::$entityClassName;
+    }
+
+    protected static function getEntityName(): string
+    {
+        $entityClassParts = explode('\\', static::$entityClassName);
+
+        return end($entityClassParts);
     }
 
     protected function runCommand(KernelInterface $kernel, string $command, array $options): void
