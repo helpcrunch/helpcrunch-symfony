@@ -24,6 +24,11 @@ class InternalAppAuthService extends AbstractTokenAuthService
         return (bool) $this->getRedisService()->getData(self::INTERNAL_APP_TOKEN_KEY);
     }
 
+    public function getInternalAppToken()
+    {
+        return $this->getRedisService()->getData(self::INTERNAL_APP_TOKEN_KEY);
+    }
+
     protected function generateToken(): string
     {
         return bin2hex(openssl_random_pseudo_bytes(self::TOKEN_LENGTH));
