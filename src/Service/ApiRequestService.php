@@ -4,9 +4,8 @@ namespace Helpcrunch\Service;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use HelpcrunchAuth\Service\TokenAuthService\InternalAppAuthService;
+use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ApiRequestService
 {
@@ -33,9 +32,9 @@ class ApiRequestService
      */
     private $key;
 
-    public function __construct(string $key, string $schema, string $domain, ContainerInterface $container)
+    public function __construct(string $key, string $schema, string $domain, InternalAppAuthService $internalAppAuthService)
     {
-        $this->key = $container->get(RedisService::class)->get(InternalAppAuthService::INTERNAL_APP_TOKEN_KEY);
+        $this->key = $internalAppAuthService->getInternalAppToken();
         $this->schema = $schema;
         $this->domain = $domain;
 
