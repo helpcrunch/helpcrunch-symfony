@@ -36,4 +36,13 @@ class SentryHelper
         }
         self::$ravenClient->captureMessage($message, ['log'], ['level' => \Raven_Client::DEBUG]);
     }
+
+    public static function logException($exception): void
+    {
+        if (!self::$ravenClient) {
+            return;
+        }
+
+        self::$ravenClient->captureException($exception);
+    }
 }
