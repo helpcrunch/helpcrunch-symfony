@@ -116,10 +116,23 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
      * @param Request $request
      * @param int $id
      * @return JsonResponse
-     * @throws \Doctrine\Common\Annotations\AnnotationException
-     * @throws \ReflectionException
      */
     public function putAction(Request $request, $id): JsonResponse
+    {
+        $result = $this->updateEntity($request->request->all(), $id);
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
+
+        return new EntityResponse($result, 'entity updated');
+    }
+
+    /**
+     * @param array $data
+     * @param int $id
+     * @return HelpcrunchEntity|EntityNotFoundResponse|ErrorResponse
+     */
+    protected function updateEntity(array $data, $id)
     {
         if (!ParametersValidatorHelper::isValidId($id)) {
             return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
@@ -129,7 +142,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         }
 
         $validator = new Validator($this->container);
-        if (!($entity = $validator->isValid($entity, $request->request->all()))) {
+        if (!($entity = $validator->isValid($entity, $data))) {
             return new ErrorResponse(
                 $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
@@ -138,7 +151,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         }
         $this->entityManager->flush();
 
-        return new EntityResponse($entity, 'entity updated');
+        return $entity;
     }
 
     /**
