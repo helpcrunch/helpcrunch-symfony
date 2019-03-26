@@ -32,7 +32,7 @@ class TokenAuthServiceFactory
             return null;
         }
 
-        $tokenHandler = $this->processAuthHeader($request);
+        $tokenHandler = $this->processAuthHeader($authHeader);
         if (!$tokenHandler) {
             $tokenHandler = $this->createAutoLoginAuthHandler($request);
         }
@@ -106,7 +106,7 @@ class TokenAuthServiceFactory
     {
         /** @var OrganizationAuthService $tokenHandler */
         $tokenHandler = $this->container->get(OrganizationAuthService::class);
-        $tokenHandler->setToken($matches['api-key']);
+        $tokenHandler->setToken($matches['apiKey']);
 
         return $tokenHandler;
     }
@@ -134,7 +134,7 @@ class TokenAuthServiceFactory
     {
         /** @var InternalAppAuthService $tokenHandler */
         $tokenHandler = $this->container->get(InternalAppAuthService::class);
-        $tokenHandler->setToken($matches['helpcrunch-service']);
+        $tokenHandler->setToken($matches['apiKey']);
 
         return $tokenHandler;
     }
