@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Controller;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Helper\ParametersValidatorHelper;
 use Helpcrunch\Repository\HelpcrunchRepository;
@@ -106,8 +107,13 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
             );
         }
 
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        // Stupid way to fix unique value duplicate
+        try {
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
+        } catch (UniqueConstraintViolationException $exception) {
+            return new ErrorResponse('Value is already in use', InnerErrorCodes::INVALID_PARAMETER);
+        }
 
         return new EntityResponse($this->getRepository()->find($entity->id), 'entity created', Response::HTTP_CREATED);
     }
