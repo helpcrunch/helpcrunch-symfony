@@ -32,7 +32,7 @@ class ApiRequestService
      */
     private $key;
 
-    public function __construct(string $key, string $schema, string $domain, InternalAppAuthService $internalAppAuthService)
+    public function __construct(string $schema, string $domain, InternalAppAuthService $internalAppAuthService)
     {
         $this->key = $internalAppAuthService->getInternalAppToken();
         $this->schema = $schema;
