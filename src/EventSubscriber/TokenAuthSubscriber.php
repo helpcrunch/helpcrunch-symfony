@@ -3,7 +3,6 @@
 namespace Helpcrunch\EventSubscriber;
 
 use Helpcrunch\Response\ErrorResponse;
-use Helpcrunch\Annotation\AuthSpecificationInterface;
 use Helpcrunch\Event\CreateTokenEvent;
 use Helpcrunch\Annotation\UnauthorizedAction;
 use Helpcrunch\Authentication;
@@ -58,7 +57,11 @@ class TokenAuthSubscriber implements EventSubscriberInterface
 
         if (!Authentication::authorize($event->getRequest(), $this->getActionsAnnotations($controller, $action))) {
             $event->setController(function () {
-                return new ErrorResponse('Not authorized', ErrorResponse::HTTP_UNAUTHORIZED);
+                return new ErrorResponse(
+                    'Not authorized',
+                    ErrorResponse::HTTP_UNAUTHORIZED,
+                    ErrorResponse::HTTP_UNAUTHORIZED
+                );
             });
         }
     }
@@ -93,25 +96,29 @@ class TokenAuthSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param object $controller
+     * @param $controller
      * @param string $action
-     * @return null|AuthSpecificationInterface
+     * @return array|null|object
      */
     private function checkUnauthorizedAnnotation($controller, string $action)
     {
         $reflectionMethod = $this->createReflectionMethod($controller, $action);
 
-        return $this->annotationReader->getMethodAnnotation(
+        $unauthorizedAnnotation = $this->annotationReader->getMethodAnnotation(
             $reflectionMethod,
             UnauthorizedAction::class
         );
+
+        return $unauthorizedAnnotation ?? $this->checkOriginMethodAnnotations($reflectionMethod, UnauthorizedAction::class);
     }
 
     private function getActionsAnnotations($controller, string $action): array
     {
         $reflectionMethod = $this->createReflectionMethod($controller, $action);
 
-        return $this->annotationReader->getMethodAnnotations($reflectionMethod);
+        $annotations = $this->annotationReader->getMethodAnnotations($reflectionMethod);
+
+        return !empty($annotations) ? $annotations : $this->checkOriginMethodAnnotations($reflectionMethod);
     }
 
     private function createReflectionMethod($controller, string $action): \ReflectionMethod
@@ -119,6 +126,25 @@ class TokenAuthSubscriber implements EventSubscriberInterface
         $reflectionObject = new \ReflectionObject($controller);
 
         return $reflectionObject->getMethod($action);
+    }
+
+    /**
+     * @param \ReflectionMethod $reflectionMethod
+     * @param string|null $annotation
+     * @return array|null|object
+     */
+    private function checkOriginMethodAnnotations(\ReflectionMethod $reflectionMethod, string $annotation = null)
+    {
+        $declaringClass = $reflectionMethod->getDeclaringClass();
+        $originMethod = $declaringClass->getMethod($reflectionMethod->getName());
+
+        if ($originMethod) {
+            return $annotation ?
+                $this->annotationReader->getMethodAnnotation($originMethod, $annotation) :
+                $this->annotationReader->getMethodAnnotations($originMethod);
+        }
+
+        return null;
     }
 
     public static function getSubscribedEvents(): array

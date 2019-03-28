@@ -3,6 +3,9 @@
 namespace Helpcrunch\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Helper\ParametersValidatorHelper;
 use Helpcrunch\Repository\HelpcrunchRepository;
@@ -17,7 +20,6 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Validator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -70,6 +72,14 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->redis->connect();
     }
 
+    /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function cgetAction(Request $request): JsonResponse
     {
         $offset = $request->query->getInt('offset', 0);
@@ -79,6 +89,10 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     }
 
     /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
      * @param int $id
      * @return JsonResponse
      */
@@ -94,6 +108,16 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return new EntityResponse($entity);
     }
 
+    /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
+     */
     public function postAction(Request $request): JsonResponse
     {
         $entity = new static::$entityClassName;
@@ -119,6 +143,10 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     }
 
     /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
      * @param Request $request
      * @param int $id
      * @return JsonResponse
@@ -161,6 +189,10 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     }
 
     /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
      * @param int $id
      * @return JsonResponse
      */
