@@ -3,6 +3,7 @@
 namespace Helpcrunch\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Helpcrunch\Service\ApiRequestService;
 use Helpcrunch\Service\EmailSenderService;
 use Helpcrunch\Service\RedisService;
 use Helpcrunch\Service\TokenValidationService;
@@ -30,5 +31,10 @@ trait HelpcrunchServicesTrait
     public function getTokenValidationService(): TokenValidationService
     {
         return $this->container->get(TokenValidationService::class);
+    }
+
+    public function getApiRequestService(): ApiRequestService
+    {
+        return $this->container->get(ApiRequestService::class);
     }
 }

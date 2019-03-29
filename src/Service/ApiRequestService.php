@@ -4,6 +4,7 @@ namespace Helpcrunch\Service;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
 use Psr\Http\Message\ResponseInterface;
 
 class ApiRequestService
@@ -31,9 +32,9 @@ class ApiRequestService
      */
     private $key;
 
-    public function __construct(string $key, string $schema, string $domain)
+    public function __construct(string $schema, string $domain, InternalAppAuthService $internalAppAuthService)
     {
-        $this->key = $key;
+        $this->key = $internalAppAuthService->getInternalAppToken();
         $this->schema = $schema;
         $this->domain = $domain;
 
@@ -76,6 +77,20 @@ class ApiRequestService
     public function put(string $organizationDomain, string $endpoint, array $data = []): ResponseInterface
     {
         return $this->makeRequest('put', $organizationDomain, $endpoint, [
+            RequestOptions::JSON => $data
+        ]);
+    }
+
+    /**
+     * @param string $organizationDomain
+     * @param string $endpoint
+     * @param array $data
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function patch(string $organizationDomain, string $endpoint, array $data = []): ResponseInterface
+    {
+        return $this->makeRequest('patch', $organizationDomain, $endpoint, [
             RequestOptions::JSON => $data
         ]);
     }

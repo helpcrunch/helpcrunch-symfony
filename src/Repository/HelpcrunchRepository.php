@@ -46,7 +46,7 @@ abstract class HelpcrunchRepository extends ServiceEntityRepository
             ->getQuery()
             ->useResultCache(false)
             ->setCacheable(false)
-            ->getArrayResult();
+            ->getResult();
     }
 
     public function count(array $criteria = []): int

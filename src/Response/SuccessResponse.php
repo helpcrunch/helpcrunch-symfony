@@ -4,6 +4,7 @@ namespace Helpcrunch\Response;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,14 +19,22 @@ class SuccessResponse extends JsonResponse
         }
         $responseData['success'] = true;
 
-        parent::__construct($responseData, $status);
+        parent::__construct($this->serialize($responseData), $status);
     }
 
-    protected function serializeEntity(HelpcrunchEntity $entity): array
+    /**
+     * @param mixed[]|HelpcrunchEntity|HelpcrunchEntity[] $entity
+     * @return array
+     */
+    protected function serialize($entity): array
     {
         /** @var Serializer $serializer */
         $serializer = SerializerBuilder::create()
-            ->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy())
+            ->setPropertyNamingStrategy(
+                new SerializedNameAnnotationStrategy(
+                    new IdenticalPropertyNamingStrategy()
+                )
+            )
             ->build();
 
         return $serializer->toArray($entity);

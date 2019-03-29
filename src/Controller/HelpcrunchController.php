@@ -2,9 +2,15 @@
 
 namespace Helpcrunch\Controller;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Helper\ParametersValidatorHelper;
 use Helpcrunch\Repository\HelpcrunchRepository;
 use Helpcrunch\Response\EntitiesBatchResponse;
+use Helpcrunch\Response\EntityNotFoundResponse;
 use Helpcrunch\Response\EntityResponse;
 use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Response\InnerErrorCodes;
@@ -14,15 +20,12 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Helpcrunch\Traits\FormTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
+use Helpcrunch\Validator\Validator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -30,7 +33,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
-    use FormTrait, HelpcrunchServicesTrait;
+    use HelpcrunchServicesTrait;
 
     const DEFAULT_PAGINATION_LIMIT = 50;
 
@@ -69,60 +72,138 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->redis->connect();
     }
 
+    /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function cgetAction(Request $request): JsonResponse
     {
         $offset = $request->query->getInt('offset', 0);
-        $limit = $request->query->getInt('limit', self::DEFAULT_PAGINATION_LIMIT);
+        $limit = $request->query->getInt('limit', static::DEFAULT_PAGINATION_LIMIT);
 
         return new EntitiesBatchResponse($this->getRepository()->findEntities($offset, $limit));
     }
 
-    public function getAction(int $id)
+    /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getAction($id): JsonResponse
     {
-        return new EntityResponse($this->findEntityById($id));
+        if (!ParametersValidatorHelper::isValidId($id)) {
+            return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
+        }
+        if (!($entity = $this->getRepository()->find($id))) {
+            return new EntityNotFoundResponse(static::getEntityName());
+        }
+
+        return new EntityResponse($entity);
     }
 
+    /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
+     */
     public function postAction(Request $request): JsonResponse
     {
         $entity = new static::$entityClassName;
 
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity));
-        if (!$form['valid']) {
+        $validator = new Validator($this->container);
+        if (!($entity = $validator->isValid($entity, $request->request->all()))) {
             return new ErrorResponse(
-                'validation error(s)',
+                $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
-                ErrorResponse::HTTP_BAD_REQUEST,
-                $form['errors']
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
 
-        $entity = $form['entity'];
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        // Stupid way to fix unique value duplicate
+        try {
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
+        } catch (UniqueConstraintViolationException $exception) {
+            return new ErrorResponse('Value is already in use', InnerErrorCodes::INVALID_PARAMETER);
+        }
 
-        return new EntityResponse($this->findEntityById($entity->id), 'entity created', Response::HTTP_CREATED);
+        return new EntityResponse($this->getRepository()->find($entity->id), 'entity created', Response::HTTP_CREATED);
     }
 
-    public function putAction(Request $request, int $id): JsonResponse
+    /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function putAction(Request $request, $id): JsonResponse
     {
-        $entity = $this->findEntityById($id);
-        $form = $this->checkDataIsValid($request->request->all(), $this->createNewForm($entity, $id));
-        if (!$form['valid']) {
+        $result = $this->updateEntity($request->request->all(), $id);
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
+
+        return new EntityResponse($result, 'entity updated');
+    }
+
+    /**
+     * @param array $data
+     * @param int $id
+     * @return HelpcrunchEntity|EntityNotFoundResponse|ErrorResponse
+     */
+    protected function updateEntity(array $data, $id)
+    {
+        if (!ParametersValidatorHelper::isValidId($id)) {
+            return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
+        }
+        if (!($entity = $this->getRepository()->find($id))) {
+            return new EntityNotFoundResponse(static::getEntityName());
+        }
+
+        $validator = new Validator($this->container);
+        if (!($entity = $validator->isValid($entity, $data))) {
             return new ErrorResponse(
-                'validation error(s)',
-                InnerErrorCodes::PUT_ENTITY_VALIDATION_FAILED,
-                ErrorResponse::HTTP_BAD_REQUEST,
-                $form['errors']
+                $validator->getErrors(),
+                InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
         $this->entityManager->flush();
 
-        return new EntityResponse($entity, 'entity updated');
+        return $entity;
     }
 
-    public function deleteAction(int $id): JsonResponse
+    /**
+     * @UserAuthSpecification()
+     * @DeviceAuthSpecification()
+     * @AutoLoginAuthSpecification()
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function deleteAction($id): JsonResponse
     {
-        $entity = $this->findEntityById($id);
+        if (!ParametersValidatorHelper::isValidId($id)) {
+            return new ErrorResponse('Invalid ID', InnerErrorCodes::INVALID_ENTITY_ID);
+        }
+        if (!($entity = $this->getRepository()->find($id))) {
+            return new EntityNotFoundResponse(static::getEntityName());
+        }
 
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
@@ -138,24 +219,16 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return $this->getDoctrine()->getRepository(static::$entityClassName);
     }
 
-    protected function findEntityById(int $id): HelpcrunchEntity
-    {
-        $entity = $this->getRepository()->find($id);
-        if (!$entity) {
-            throw new NotFoundHttpException();
-        }
-
-        return $entity;
-    }
-
     protected function getNewEntity(): HelpcrunchEntity
     {
         return new static::$entityClassName;
     }
 
-    protected function createNewForm(HelpcrunchEntity $entity, $entityId = false): FormInterface
+    protected static function getEntityName(): string
     {
-        return $this->createForm($entity->getFormType(), $entity, ['entity_id' => $entityId]);
+        $entityClassParts = explode('\\', static::$entityClassName);
+
+        return end($entityClassParts);
     }
 
     protected function runCommand(KernelInterface $kernel, string $command, array $options): void
