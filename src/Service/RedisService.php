@@ -40,6 +40,9 @@ class RedisService
     public function pushData($key, $data, int $ttl = null): void
     {
         $this->redis->setex($key, $ttl ?? $this->ttl, $data);
+        if ($ttl === null) {
+            $this->redis->persist($key);
+        }
     }
 
     public function pushDataWithoutExpiration($key, $data): void
