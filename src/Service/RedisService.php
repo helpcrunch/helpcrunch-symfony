@@ -15,9 +15,15 @@ class RedisService
      */
     private $redis;
 
+    /**
+     * @var int
+     */
+    private $ttl;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->ttl = $container->getParameter('redis_ttl');
 
         $this->redis = new \Redis();
         $this->connect();
@@ -31,12 +37,17 @@ class RedisService
         );
     }
 
-    public function pushData($key, $data, int $ttl = 0): void
+    public function pushData($key, $data, int $ttl = null): void
     {
-        $this->redis->set($key, $data, $ttl);
-        if (!$ttl) {
+        $this->redis->setex($key, $ttl ?? $this->ttl, $data);
+        if ($ttl === null) {
             $this->redis->persist($key);
         }
+    }
+
+    public function pushDataWithoutExpiration($key, $data): void
+    {
+        $this->redis->set($key, $data);
     }
 
     public function delete($key): void
