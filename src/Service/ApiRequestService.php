@@ -41,6 +41,11 @@ class ApiRequestService
         $this->client = new Client(['headers' => $this->setHeaders()]);
     }
 
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
     /**
      * @param string $domain
      * @param string $endpoint
