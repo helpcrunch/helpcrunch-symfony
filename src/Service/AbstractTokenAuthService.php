@@ -67,6 +67,11 @@ abstract class AbstractTokenAuthService
             return false;
         }
 
+        $organizationHeader = $this->request->headers->get('Authorization-Domain', null);
+        if ($organizationHeader) {
+            return $organizationHeader;
+        }
+
         $hostParts = explode('.', $this->request->getHost());
 
         return reset($hostParts);
