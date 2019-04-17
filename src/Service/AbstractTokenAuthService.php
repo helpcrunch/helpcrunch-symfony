@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 abstract class AbstractTokenAuthService
 {
+    const AUTHORIZATION_DOMAIN = 'Authorization-Domain';
+
     use HelpcrunchServicesTrait;
 
     /**
@@ -67,7 +69,7 @@ abstract class AbstractTokenAuthService
             return false;
         }
 
-        $organizationHeader = $this->request->headers->get('Authorization-Domain', null);
+        $organizationHeader = $this->request->headers->get(self::AUTHORIZATION_DOMAIN, null);
         if ($organizationHeader) {
             return $organizationHeader;
         }
