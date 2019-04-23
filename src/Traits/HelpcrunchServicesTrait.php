@@ -20,6 +20,10 @@ trait HelpcrunchServicesTrait
 
     public function getRedisService(): RedisService
     {
+        if (class_exists("App\\Service\\OrganizationsRedisService")) {
+            return $this->container->get("App\\Service\\OrganizationsRedisService");
+        }
+
         return $this->container->get(RedisService::class);
     }
 
