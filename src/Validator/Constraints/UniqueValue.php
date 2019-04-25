@@ -5,6 +5,9 @@ namespace Helpcrunch\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 
 /**
+ * @Annotation
+ * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ *
  * @property string $message
  * @property string|null $entityClass
  * @property string|null $field
