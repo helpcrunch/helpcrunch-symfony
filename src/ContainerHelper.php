@@ -11,9 +11,6 @@ class ContainerHelper
      */
     private static $container = null;
 
-    /**
-     * @param ContainerInterface $container
-     */
     public static function setContainer(ContainerInterface $container): void
     {
         self::$container = $container;
