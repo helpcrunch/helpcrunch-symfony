@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Validator\Constraints;
 
+use Helpcrunch\ContainerHelper;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
@@ -13,15 +14,18 @@ class UniqueValueValidator extends ConstraintValidator
 {
     use HelpcrunchServicesTrait;
 
+    /**
+     * @var ContainerInterface|null
+     */
     private $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
 
     public function validate($value, Constraint $constraint)
     {
+        $this->container = ContainerHelper::getContainer();
+        if (!$this->container) {
+            throw new \Exception('Container is not defined');
+        }
+
         if (!($constraint instanceof UniqueValue)) {
             throw new UnexpectedTypeException($constraint, UniqueValue::class);
         }
