@@ -26,7 +26,6 @@ class RedisService
         $this->ttl = $container->getParameter('redis_ttl');
 
         $this->redis = new \Redis();
-        $this->connect();
     }
 
     public function connect(string $host = null, int $port = null): void
@@ -66,11 +65,11 @@ class RedisService
 
     /**
      * @param $key
-     * @return bool|int
+     * @return null|int
      */
     public function getTimeToLive($key)
     {
-        return $this->redis->ttl($key);
+        return $this->redis->ttl($key) ?? null;
     }
 
     public function pushArrayData($key, $data): void
