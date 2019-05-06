@@ -28,9 +28,9 @@ class RedisService
         $this->redis = new \Redis();
     }
 
-    public function connect(string $host = null, int $port = null): void
+    public function connect(string $host = null, int $port = null): bool
     {
-        $this->redis->connect(
+        return $this->redis->connect(
             $host ?? $this->container->getParameter('redis_host'),
             $port ?? $this->container->getParameter('redis_port')
         );
