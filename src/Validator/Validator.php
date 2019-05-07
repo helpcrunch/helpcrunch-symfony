@@ -4,7 +4,9 @@ namespace Helpcrunch\Validator;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
+use Helpcrunch\Validator\Constraints\UniqueValue;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
 use Doctrine\Common\Annotations\AnnotationException;
@@ -107,7 +109,7 @@ final class Validator
     private function validateData(HelpcrunchEntity $entity, array $rules, array $data): void
     {
         $validation = Validation::createValidator();
-        foreach ($rules as $field => $validationRule) {
+        foreach ($rules as $field => $validationRules) {
             if ($entity->id && empty($data[$field])) {
                 continue;
             }
@@ -115,9 +117,22 @@ final class Validator
                 continue;
             }
 
-            $violation = $validation->validate($data[$field] ?? null, $rules[$field]);
+            $validationRules = $this->checkUniqueValueOnUpdate($entity, $validationRules);
+
+            $violation = $validation->validate($data[$field] ?? null, $validationRules);
             $this->collectErrors($field, $violation);
         }
+    }
+
+    private function checkUniqueValueOnUpdate(HelpcrunchEntity $entity, array $constraints): array
+    {
+        foreach ($constraints as $key => $constraint) {
+            if ($entity->id && ($constraint instanceof UniqueValue)) {
+                unset($constraints[$key]);
+            }
+        }
+
+        return $constraints;
     }
 
     private function collectErrors($name, ConstraintViolationListInterface $violation): void
