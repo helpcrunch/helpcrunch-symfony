@@ -26,6 +26,7 @@ class RedisService
         $this->ttl = $container->getParameter('redis_ttl');
 
         $this->redis = new \Redis();
+        $this->connect();
     }
 
     public function connect(string $host = null, int $port = null): bool
