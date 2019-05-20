@@ -8,6 +8,7 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use JMS\Serializer\SerializationContext;
 
 class SuccessResponse extends JsonResponse
 {
@@ -37,6 +38,9 @@ class SuccessResponse extends JsonResponse
             )
             ->build();
 
-        return $serializer->toArray($entity);
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+
+        return $serializer->toArray($entity, $context);
     }
 }
