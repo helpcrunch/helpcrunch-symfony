@@ -145,9 +145,9 @@ class TokenAuthSubscriber implements EventSubscriberInterface
 
         $parentsMethod = $parentClass->getMethod($reflectionMethod->getName());
         if ($parentsMethod && !empty($this->annotationReader->getMethodAnnotations($parentsMethod))) {
-            return $annotation ?
-                $this->annotationReader->getMethodAnnotation($parentsMethod, $annotation) :
-                $this->annotationReader->getMethodAnnotations($parentsMethod);
+            return $annotation
+                ? $this->annotationReader->getMethodAnnotation($parentsMethod, $annotation)
+                : $this->annotationReader->getMethodAnnotations($parentsMethod);
         } else {
             return $this->recursiveAnnotationSearching($parentsMethod, $annotation);
         }
