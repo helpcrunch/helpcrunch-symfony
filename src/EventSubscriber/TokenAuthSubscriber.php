@@ -142,7 +142,10 @@ class TokenAuthSubscriber implements EventSubscriberInterface
         $declaringClass = $reflectionMethod->getDeclaringClass();
         $parentClass = $declaringClass->getParentClass();
 
-        if (!$parentClass || !$this->checkIsHelpcrunchController($parentClass)) {
+        if (!$parentClass
+            || !$this->checkIsHelpcrunchController($parentClass)
+            || !$parentClass->hasMethod($reflectionMethod->getName())
+        ) {
             return null;
         }
 
