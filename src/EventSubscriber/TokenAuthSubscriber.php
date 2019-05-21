@@ -107,7 +107,6 @@ class TokenAuthSubscriber implements EventSubscriberInterface
     private function checkUnauthorizedAnnotation($controller, string $action)
     {
         $reflectionMethod = $this->createReflectionMethod($controller, $action);
-        $declaringClass = $reflectionMethod->getDeclaringClass();
 
         $unauthorizedAnnotation = $this->annotationReader->getMethodAnnotation(
             $reflectionMethod,
