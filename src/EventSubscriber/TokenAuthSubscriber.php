@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\EventSubscriber;
 
+use Helpcrunch\Controller\HelpcrunchController;
 use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Event\CreateTokenEvent;
 use Helpcrunch\Annotation\UnauthorizedAction;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Doctrine\Common\Annotations\Reader;
 use ReflectionMethod;
 use ReflectionObject;
+use ReflectionClass;
 
 class TokenAuthSubscriber implements EventSubscriberInterface
 {
@@ -105,13 +107,14 @@ class TokenAuthSubscriber implements EventSubscriberInterface
     private function checkUnauthorizedAnnotation($controller, string $action)
     {
         $reflectionMethod = $this->createReflectionMethod($controller, $action);
+        $declaringClass = $reflectionMethod->getDeclaringClass();
 
         $unauthorizedAnnotation = $this->annotationReader->getMethodAnnotation(
             $reflectionMethod,
             UnauthorizedAction::class
         );
 
-        return $unauthorizedAnnotation ?? $this->checkOriginMethodAnnotations($reflectionMethod, UnauthorizedAction::class);
+        return $unauthorizedAnnotation ?? $this->recursiveAnnotationSearching($reflectionMethod, UnauthorizedAction::class);
     }
 
     private function getActionsAnnotations($controller, string $action): array
@@ -139,7 +142,8 @@ class TokenAuthSubscriber implements EventSubscriberInterface
     {
         $declaringClass = $reflectionMethod->getDeclaringClass();
         $parentClass = $declaringClass->getParentClass();
-        if (!$parentClass) {
+
+        if (!$parentClass || !$this->checkIsHelpcrunchController($parentClass)) {
             return null;
         }
 
@@ -151,6 +155,12 @@ class TokenAuthSubscriber implements EventSubscriberInterface
         } else {
             return $this->recursiveAnnotationSearching($parentsMethod, $annotation);
         }
+    }
+
+    private function checkIsHelpcrunchController(ReflectionClass $class): bool
+    {
+        return $class->isSubclassOf(HelpcrunchController::class)
+            || ($class->getName() == HelpcrunchController::class);
     }
 
     public static function getSubscribedEvents(): array
