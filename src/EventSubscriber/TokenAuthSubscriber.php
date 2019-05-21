@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Doctrine\Common\Annotations\Reader;
+use ReflectionMethod;
+use ReflectionObject;
 
 class TokenAuthSubscriber implements EventSubscriberInterface
 {
@@ -118,33 +120,37 @@ class TokenAuthSubscriber implements EventSubscriberInterface
 
         $annotations = $this->annotationReader->getMethodAnnotations($reflectionMethod);
 
-        return !empty($annotations) ? $annotations : $this->checkOriginMethodAnnotations($reflectionMethod);
+        return !empty($annotations) ? $annotations : $this->recursiveAnnotationSearching($reflectionMethod);
     }
 
-    private function createReflectionMethod($controller, string $action): \ReflectionMethod
+    private function createReflectionMethod($controller, string $action): ReflectionMethod
     {
-        $reflectionObject = new \ReflectionObject($controller);
+        $reflectionObject = new ReflectionObject($controller);
 
         return $reflectionObject->getMethod($action);
     }
 
     /**
-     * @param \ReflectionMethod $reflectionMethod
+     * @param ReflectionMethod $reflectionMethod
      * @param string|null $annotation
      * @return array|null|object
      */
-    private function checkOriginMethodAnnotations(\ReflectionMethod $reflectionMethod, string $annotation = null)
+    private function recursiveAnnotationSearching(ReflectionMethod $reflectionMethod, string $annotation = null)
     {
         $declaringClass = $reflectionMethod->getDeclaringClass();
-        $originMethod = $declaringClass->getMethod($reflectionMethod->getName());
-
-        if ($originMethod) {
-            return $annotation ?
-                $this->annotationReader->getMethodAnnotation($originMethod, $annotation) :
-                $this->annotationReader->getMethodAnnotations($originMethod);
+        $parentClass = $declaringClass->getParentClass();
+        if (!$parentClass) {
+            return null;
         }
 
-        return null;
+        $parentsMethod = $parentClass->getMethod($reflectionMethod->getName());
+        if ($parentsMethod && !empty($this->annotationReader->getMethodAnnotations($parentsMethod))) {
+            return $annotation
+                ? $this->annotationReader->getMethodAnnotation($parentsMethod, $annotation)
+                : $this->annotationReader->getMethodAnnotations($parentsMethod);
+        } else {
+            return $this->recursiveAnnotationSearching($parentsMethod, $annotation);
+        }
     }
 
     public static function getSubscribedEvents(): array
