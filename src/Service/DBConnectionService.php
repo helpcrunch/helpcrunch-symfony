@@ -41,10 +41,13 @@ class DBConnectionService
         $this->connection->close();
     }
 
-    public function createDatabase(string $dataBaseName): void
+    public function createDatabase(string $dataBaseName, Connection $connection = null): void
     {
+        if (!$connection) {
+            $connection = $this->connection;
+        }
         try {
-            $this->connection->query('CREATE DATABASE "' . $dataBaseName . '"');
+            $connection->query('CREATE DATABASE "' . $dataBaseName . '"');
         } catch (DriverException $exception) {
             SQLExecutor::checkException($exception);
         }
