@@ -120,9 +120,11 @@ class TokenAuthSubscriber implements EventSubscriberInterface
     {
         $reflectionMethod = $this->createReflectionMethod($controller, $action);
 
-        $annotations = $this->annotationReader->getMethodAnnotations($reflectionMethod);
+        if ($annotations = $this->annotationReader->getMethodAnnotations($reflectionMethod)) {
+            return $annotations;
+        }
 
-        return !empty($annotations) ? $annotations : $this->recursiveAnnotationSearching($reflectionMethod);
+        return $this->recursiveAnnotationSearching($reflectionMethod) ?: [];
     }
 
     private function createReflectionMethod($controller, string $action): ReflectionMethod
