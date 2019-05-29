@@ -7,7 +7,7 @@ use GuzzleHttp\RequestOptions;
 use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
 use Psr\Http\Message\ResponseInterface;
 
-class ApiRequestService
+abstract class RequestService
 {
     const DEFAULT_DOMAIN = 'api';
     const ENDPOINTS_PREFIX = '/api';
@@ -15,22 +15,22 @@ class ApiRequestService
     /**
      * @var Client
      */
-    private $client;
+    protected $client;
 
     /**
      * @var string
      */
-    private $schema;
+    protected $schema;
 
     /**
      * @var string
      */
-    private $domain;
+    protected $domain;
 
     /**
      * @var string
      */
-    private $key;
+    protected $key;
 
     public function __construct(string $schema, string $domain, InternalAppAuthService $internalAppAuthService)
     {
@@ -122,7 +122,7 @@ class ApiRequestService
      * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function makeRequest(
+    protected function makeRequest(
         string $method,
         string $organizationDomain,
         string $endpoint,
@@ -133,12 +133,12 @@ class ApiRequestService
         return $response;
     }
 
-    private function getUrl(string $organizationDomain, string $endpoint): string
+    protected function getUrl(string $organizationDomain, string $endpoint): string
     {
         return $this->schema . $organizationDomain . '.' . $this->domain . self::ENDPOINTS_PREFIX . $endpoint;
     }
 
-    private function setHeaders(): array
+    protected function setHeaders(): array
     {
         return [
             'Authorization' => 'Bearer helpcrunch-service="' . $this->key . '"',
