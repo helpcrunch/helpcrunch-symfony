@@ -27,20 +27,17 @@ class MemcacheService
      */
     public function get(string $key)
     {
-        $cached = $this->memcached->get($key);
-        if (!empty($cached)) {
-            $cached = unserialize($cached);
+        $value = $this->memcached->get($key);
+        if (!empty($value)) {
+            $value = unserialize($value);
         }
 
-        return $cached;
+        return $value;
     }
 
-    /**
-     * @param mixed $forCache
-     */
-    public function set(string $key, $forCache): void
+    public function set(string $key, $value): void
     {
-        $this->memcached->set($key, serialize($forCache), $this->ttl);
+        $this->memcached->set($key, serialize($value), $this->ttl);
     }
 
     public function delete(string $key): void
