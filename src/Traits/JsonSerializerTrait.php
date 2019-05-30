@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits;
+namespace Helpcrunch\Traits;
 
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
