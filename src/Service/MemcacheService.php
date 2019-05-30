@@ -5,12 +5,12 @@ namespace Helpcrunch\Service;
 use \Memcached;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
-class CachedService
+class MemcacheService
 {
     /**
      * @var int
      */
-    private $memcacheTtl = 300;
+    private $ttl = 300;
 
     /**
      * @var Memcached
@@ -25,9 +25,9 @@ class CachedService
     /**
      * @return mixed
      */
-    public function getFromMemcache(string $memcacheKey)
+    public function get(string $key)
     {
-        $cached = $this->memcached->get($memcacheKey);
+        $cached = $this->memcached->get($key);
         if (!empty($cached)) {
             $cached = unserialize($cached);
         }
@@ -38,19 +38,19 @@ class CachedService
     /**
      * @param mixed $forCache
      */
-    public function setToMemcache(string $memcacheKey, $forCache): void
+    public function set(string $key, $forCache): void
     {
-        $this->memcached->set($memcacheKey, serialize($forCache), $this->memcacheTtl);
+        $this->memcached->set($key, serialize($forCache), $this->ttl);
     }
 
-    public function deleteFromMemcache(string $memcacheKey): void
+    public function delete(string $key): void
     {
-        $this->memcached->delete($memcacheKey);
+        $this->memcached->delete($key);
     }
 
-    public function setMemcacheTtl(int $memcacheTtl): self
+    public function setTtl(int $ttl): self
     {
-        $this->memcacheTtl = $memcacheTtl;
+        $this->ttl = $ttl;
 
         return $this;
     }
