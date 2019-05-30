@@ -5,7 +5,7 @@ namespace Helpcrunch\Service;
 use \Memcached;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
-class MemcacheService
+class MemcachedService
 {
     /**
      * @var int
@@ -17,9 +17,9 @@ class MemcacheService
      */
     private $memcached;
 
-    public function __construct(string $memcacheConnection)
+    public function __construct(string $memcachedConnection)
     {
-        $this->memcached = MemcachedAdapter::createConnection($memcacheConnection);
+        $this->memcached = MemcachedAdapter::createConnection($memcachedConnection);
     }
 
     /**
