@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Entity;
 
+use App\Traits\JsonSerializerTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class HelpcrunchEntity
 {
-    use GetterSetterTrait;
+    use GetterSetterTrait, JsonSerializerTrait;
 
     /**
      * @ORM\Id

@@ -20,27 +20,6 @@ class SuccessResponse extends JsonResponse
         }
         $responseData['success'] = true;
 
-        parent::__construct($this->serialize($responseData), $status);
-    }
-
-    /**
-     * @param mixed[]|HelpcrunchEntity|HelpcrunchEntity[] $entity
-     * @return array
-     */
-    protected function serialize($entity): array
-    {
-        /** @var Serializer $serializer */
-        $serializer = SerializerBuilder::create()
-            ->setPropertyNamingStrategy(
-                new SerializedNameAnnotationStrategy(
-                    new IdenticalPropertyNamingStrategy()
-                )
-            )
-            ->build();
-
-        $context = new SerializationContext();
-        $context->setSerializeNull(true);
-
-        return $serializer->toArray($entity, $context);
+        parent::__construct($responseData, $status);
     }
 }

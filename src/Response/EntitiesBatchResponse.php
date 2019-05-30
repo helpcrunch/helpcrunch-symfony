@@ -13,6 +13,11 @@ class EntitiesBatchResponse extends SuccessResponse
      */
     public function __construct(array $entities, $message = null, int $status = self::HTTP_OK)
     {
-        parent::__construct(['data' => $entities], $message, $status);
+        $serializedEntities = [];
+        foreach ($entities as $entity) {
+            $serializedEntities[] = $entity->jsonSerialize();
+        }
+
+        parent::__construct(['data' => $serializedEntities], $message, $status);
     }
 }

@@ -19,7 +19,7 @@ class EntityResponse extends SuccessResponse
     public function __construct($entity = null, $message = null, int $status = self::HTTP_OK)
     {
         $this->entity = $entity;
-        parent::__construct(['data' => $entity], $message, $status);
+        parent::__construct(['data' => $entity->jsonSerialize()], $message, $status);
     }
 
     /**
