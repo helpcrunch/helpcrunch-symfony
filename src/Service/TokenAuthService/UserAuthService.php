@@ -45,4 +45,12 @@ class UserAuthService extends MobileUserAuthService
     {
         return $this->getOrganizationsDomain() . '_' . $this->userId;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
 }
