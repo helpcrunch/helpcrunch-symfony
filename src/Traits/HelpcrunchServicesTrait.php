@@ -3,7 +3,7 @@
 namespace Helpcrunch\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Helpcrunch\Service\ApiRequestService;
+use Helpcrunch\Service\RequestService\ApiRequestService;
 use Helpcrunch\Service\EmailSenderService;
 use Helpcrunch\Service\RedisService;
 use Helpcrunch\Service\TokenAuthService\UserAuthService;
