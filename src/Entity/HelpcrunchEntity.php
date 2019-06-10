@@ -2,7 +2,7 @@
 
 namespace Helpcrunch\Entity;
 
-use App\Traits\JsonSerializerTrait;
+use Helpcrunch\Traits\JsonSerializerTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
