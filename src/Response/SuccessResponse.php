@@ -2,18 +2,15 @@
 
 namespace Helpcrunch\Response;
 
-use Helpcrunch\Entity\HelpcrunchEntity;
-use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use JMS\Serializer\SerializationContext;
 
 class SuccessResponse extends JsonResponse
 {
-    public function __construct(array $data = [], $message = null, int $status = self::HTTP_OK)
+    public function __construct($data = [], $message = null, int $status = self::HTTP_OK)
     {
+        if (!is_array($data)) {
+            $data = ['data' => $data];
+        }
         $responseData = $data;
         if ($message) {
             $responseData['message'] = $message;
