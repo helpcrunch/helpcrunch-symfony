@@ -10,7 +10,6 @@
     "ext-redis": "*",
     "ext-memcached": "*",
     "friendsofsymfony/rest-bundle": "^2.3",
-    "jms/serializer": "^2.3",
     "php": ">=7.2",
     "sentry/sentry": "^1.8",
     "symfony/form": "*",
