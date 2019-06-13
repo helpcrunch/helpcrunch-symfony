@@ -55,8 +55,8 @@ class EntityNotificationSocketListener
 
     private function prepareEventData(HelpcrunchEntity $entity): array
     {
-        $eventData['event_id'] = $this->generateEventId($entity) . '.' .
-            $this->getEventActionForEventId();
+        $eventData['event_type'] = $this->getEventActionType();
+        $eventData['event_id'] = $this->generateEventId($entity);
         $eventData['event_data'] = empty($this->changesSet)
             ? $entity->jsonSerialize()
             : $this->getUpdatedEntityFields($entity);
@@ -71,7 +71,7 @@ class EntityNotificationSocketListener
             '[' . $entity->id . ']';
     }
 
-    private function getEventActionForEventId(): string
+    private function getEventActionType(): string
     {
         return empty($this->changesSet) ? 'added' : 'changed';
     }
