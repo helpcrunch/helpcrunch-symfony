@@ -5,6 +5,7 @@ namespace Helpcrunch\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use ZMQ;
 use ZMQContext;
+use ZMQSocket;
 
 class SocketService
 {
@@ -14,7 +15,7 @@ class SocketService
     private $container;
 
     /**
-     * @var \ZMQSocket
+     * @var ZMQSocket
      */
     private $socket;
 
