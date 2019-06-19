@@ -3,6 +3,7 @@
 namespace Helpcrunch\Response;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
+use JsonSerializable;
 
 class EntityResponse extends SuccessResponse
 {
@@ -18,8 +19,11 @@ class EntityResponse extends SuccessResponse
      */
     public function __construct($entity = null, $message = null, int $status = self::HTTP_OK)
     {
-        $this->entity = $entity;
-        parent::__construct(['data' => $entity->jsonSerialize()], $message, $status);
+        if ($entity instanceof JsonSerializable) {
+            $entity = $entity->jsonSerialize();
+        }
+
+        parent::__construct(['data' => $entity], $message, $status);
     }
 
     /**

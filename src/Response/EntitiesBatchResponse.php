@@ -3,6 +3,7 @@
 namespace Helpcrunch\Response;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
+use JsonSerializable;
 
 class EntitiesBatchResponse extends SuccessResponse
 {
@@ -15,7 +16,9 @@ class EntitiesBatchResponse extends SuccessResponse
     {
         $serializedEntities = [];
         foreach ($entities as $entity) {
-            $serializedEntities[] = $entity->jsonSerialize();
+            if ($entity instanceof JsonSerializable) {
+                $serializedEntities[] = $entity->jsonSerialize();
+            }
         }
 
         parent::__construct(['data' => $serializedEntities], $message, $status);
