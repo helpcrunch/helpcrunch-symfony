@@ -16,7 +16,7 @@ class EntitiesBatchResponse extends SuccessResponse
     {
         $serializedEntities = [];
         foreach ($entities as $entity) {
-            if (is_object($entity) && ($entity instanceof JsonSerializable)) {
+            if (is_object($entity) && method_exists($entity, 'jsonSerialize')) {
                 $serializedEntities[] = $entity->jsonSerialize();
             } else {
                 $serializedEntities[] = $entity;

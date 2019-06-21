@@ -22,14 +22,14 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Validator;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
@@ -231,7 +231,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         return end($entityClassParts);
     }
 
-    protected function runCommand(KernelInterface $kernel, string $command, array $options): void
+    protected function runCommand(KernelInterface $kernel, string $command, array $options): int
     {
         $application = new Application($kernel);
         $application->setAutoExit(false);
@@ -241,7 +241,8 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
         $input = new ArrayInput($arguments);
 
-        $output = new ConsoleOutput();
-        $application->run($input, $output);
+        $output = new NullOutput();
+
+        return $application->doRun($input, $output);
     }
 }
