@@ -20,7 +20,7 @@ class EntityResponse extends SuccessResponse
     public function __construct($entity = null, $message = null, int $status = self::HTTP_OK)
     {
         $this->entity = $entity;
-        if (is_object($entity) && ($entity instanceof JsonSerializable)) {
+        if (is_object($entity) && method_exists($entity, 'jsonSerialize')) {
             $entity = $entity->jsonSerialize();
         }
 
