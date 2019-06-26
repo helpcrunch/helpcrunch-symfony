@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventListener;
+namespace Helpcrunch\EventListener;
 
 use Helpcrunch\Exception\ValidationException;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
