@@ -2,13 +2,12 @@
 
 namespace Helpcrunch\Exception;
 
-use Helpcrunch\ExceptionResponse\HelpcrunchExceptionResponse;
-use Helpcrunch\ExceptionResponse\ValidationExceptionResponse;
+use Helpcrunch\Response\InnerErrorCodes;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ValidationException extends HelpcrunchException
 {
     CONST MESSAGE = 'Validation error';
-    const CODE = 400;
 
     /**
      * @var array
@@ -17,7 +16,11 @@ class ValidationException extends HelpcrunchException
 
     public function __construct(array $errors = [])
     {
-        parent::__construct(self::MESSAGE, self::CODE);
+        parent::__construct(
+            self::MESSAGE,
+            JsonResponse::HTTP_BAD_REQUEST,
+            InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED
+        );
 
         $this->validationErrors = $errors;
     }

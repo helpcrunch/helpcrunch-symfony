@@ -2,8 +2,7 @@
 
 namespace Helpcrunch\Exception;
 
-use Helpcrunch\ExceptionResponse\InvalidParameterExceptionResponse;
-use Helpcrunch\ExceptionResponse\HelpcrunchExceptionResponse;
+use Helpcrunch\Response\InnerErrorCodes;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EntityNotFoundException extends HelpcrunchException
@@ -17,7 +16,11 @@ class EntityNotFoundException extends HelpcrunchException
 
     public function __construct(string $entityName = '')
     {
-        parent::__construct(self::MESSAGE . $entityName, JsonResponse::HTTP_NOT_FOUND);
+        parent::__construct(
+            self::MESSAGE . $entityName,
+            JsonResponse::HTTP_NOT_FOUND,
+            InnerErrorCodes::ENTITY_NOT_FOUND
+        );
 
         $this->entityName = $entityName;
     }
