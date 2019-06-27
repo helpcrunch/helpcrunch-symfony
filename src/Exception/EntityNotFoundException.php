@@ -22,11 +22,6 @@ class EntityNotFoundException extends HelpcrunchException
         $this->entityName = $entityName;
     }
 
-    public function getExceptionsResponse(): HelpcrunchExceptionResponse
-    {
-        return new InvalidParameterExceptionResponse($this);
-    }
-
     public function getData(): string
     {
         return self::MESSAGE . $this->entityName;

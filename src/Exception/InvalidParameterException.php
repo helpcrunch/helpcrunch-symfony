@@ -22,11 +22,6 @@ class InvalidParameterException extends HelpcrunchException
         $this->parameterName = $parameterName;
     }
 
-    public function getExceptionsResponse(): HelpcrunchExceptionResponse
-    {
-        return new InvalidParameterExceptionResponse($this);
-    }
-
     public function getData(): string
     {
         return self::MESSAGE . $this->parameterName;

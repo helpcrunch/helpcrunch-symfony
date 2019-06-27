@@ -4,10 +4,14 @@ namespace Helpcrunch\Exception;
 
 use Exception;
 use Helpcrunch\ExceptionResponse\HelpcrunchExceptionResponse;
+use Helpcrunch\Response\ErrorResponse;
 
 abstract class HelpcrunchException extends Exception
 {
-    abstract public function getExceptionsResponse(): HelpcrunchExceptionResponse;
+    public function getExceptionsResponse(string $innerErrorCode = null, int $errorCode = null): ErrorResponse
+    {
+        return new ErrorResponse($this->getData(), $innerErrorCode, $errorCode);
+    }
 
     abstract public function getData();
 }

@@ -14,10 +14,11 @@ trait EntityReceiverTrait
         if (!ParametersValidatorHelper::isValidId($id)) {
             throw new InvalidParameterException('id');
         }
+
         /** @var HelpcrunchEntity $entity */
         $entity = $this->getDoctrine()->getRepository($entityClass)->find($id);
         if (!$entity) {
-            throw new EntityNotFoundException($class);
+            throw new EntityNotFoundException($entityClass);
         }
 
         return $entity;

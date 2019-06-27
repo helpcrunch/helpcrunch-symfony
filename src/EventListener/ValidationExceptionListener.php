@@ -14,8 +14,6 @@ class ValidationExceptionListener
             return;
         }
 
-        $exceptionResponse = $exception->getExceptionsResponse()->createResponse();
-
-        $event->setResponse($exceptionResponse);
+        $event->setResponse($exception->getExceptionsResponse());
     }
 }

@@ -22,11 +22,6 @@ class ValidationException extends HelpcrunchException
         $this->validationErrors = $errors;
     }
 
-    public function getExceptionsResponse(): HelpcrunchExceptionResponse
-    {
-        return new ValidationExceptionResponse($this);
-    }
-
     public function getData(): array
     {
         return $this->validationErrors;
