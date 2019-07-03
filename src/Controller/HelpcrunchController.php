@@ -20,20 +20,17 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use Helpcrunch\Traits\CommandRunnerTrait;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Validator;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 abstract class HelpcrunchController extends FOSRestController implements ClassResourceInterface
 {
-    use HelpcrunchServicesTrait;
+    use HelpcrunchServicesTrait, CommandRunnerTrait;
 
     const DEFAULT_PAGINATION_LIMIT = 50;
 
@@ -229,20 +226,5 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $entityClassParts = explode('\\', static::$entityClassName);
 
         return end($entityClassParts);
-    }
-
-    protected function runCommand(KernelInterface $kernel, string $command, array $options): int
-    {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $arguments = ['command' => $command];
-        $arguments = array_merge($arguments, $options);
-
-        $input = new ArrayInput($arguments);
-
-        $output = new NullOutput();
-
-        return $application->doRun($input, $output);
     }
 }
