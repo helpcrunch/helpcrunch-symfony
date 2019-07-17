@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Helpcrunch\Service\RequestService\ApiRequestService;
 use Helpcrunch\Service\EmailSenderService;
 use Helpcrunch\Service\RedisService;
+use Helpcrunch\Service\RequestService\KnowledgeBaseApiRequestService;
 use Helpcrunch\Service\TokenAuthService\UserAuthService;
 use Helpcrunch\Service\TokenValidationService;
 
@@ -42,5 +43,10 @@ trait HelpcrunchServicesTrait
     public function getApiRequestService(): ApiRequestService
     {
         return $this->container->get(ApiRequestService::class);
+    }
+
+    public function getKnowledgeBaseApiRequestService(): KnowledgeBaseApiRequestService
+    {
+        return $this->container->get(KnowledgeBaseApiRequestService::class);
     }
 }
