@@ -240,9 +240,8 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $arguments = array_merge($arguments, $options);
 
         $input = new ArrayInput($arguments);
-
         $output = new NullOutput();
 
-        return $application->doRun($input, $output);
+        return $application->run($input, $output);
     }
 }
