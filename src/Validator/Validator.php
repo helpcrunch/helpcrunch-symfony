@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Validator;
 
+use Helpcrunch\Entity\DateTimeFilteredInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Constraints\UniqueValue;
@@ -44,6 +45,7 @@ final class Validator
 
         $data = $this->validateRelations($entity, $collector->getEntitiesRelations(), $data);
 
+        $data = $this->filterDateTimes($entity, $data);
         $this->validateData($entity, $collector->getValidationRules(), $data);
         if (!count($this->errors)) {
             return $this->createEntity($entity, $data);
@@ -151,5 +153,20 @@ final class Validator
         }
 
         return $entity;
+    }
+
+    private function filterDateTimes(HelpcrunchEntity $entity, array $data): array
+    {
+        if ($entity instanceof DateTimeFilteredInterface) {
+            if (!empty($data['createdAt'])) {
+                unset($data['createdAt']);
+            }
+
+            if (!empty($data['updatedAt'])) {
+                unset($data['updatedAt']);
+            }
+        }
+
+        return $data;
     }
 }
