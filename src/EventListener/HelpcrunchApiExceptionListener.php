@@ -15,7 +15,7 @@ abstract class HelpcrunchApiExceptionListener
     /**
      * @var ContainerInterface
      */
-    private $container;
+    protected $container;
 
     /**
      * @var Exception|null
