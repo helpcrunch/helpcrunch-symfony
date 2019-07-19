@@ -21,6 +21,6 @@ trait CommandRunnerTrait
 
         $output = new NullOutput();
 
-        return $application->doRun($input, $output);
+        return $application->run($input, $output);
     }
 }
