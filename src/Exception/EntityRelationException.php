@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EntityRelationException extends HelpcrunchException
 {
-    const MESSAGE = 'Entity %parent does not belong to entity %entity';
+    const MESSAGE = 'Entity %child does not belong to entity %parent';
 
     /**
      * @var string
