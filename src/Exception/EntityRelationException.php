@@ -7,22 +7,22 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EntityRelationException extends HelpcrunchException
 {
-    const MESSAGE = 'Entity %belong does not belong to entity %entity';
+    const MESSAGE = 'Entity %parent does not belong to entity %entity';
 
     /**
      * @var string
      */
-    private $entityName = '';
+    private $parentEntity = '';
 
     /**
      * @var string
      */
-    private $belongEntityName = '';
+    private $childEntity = '';
 
-    public function __construct(string $entityName = '', string $belongEntityName = '')
+    public function __construct(string $parentEntity = '', string $childEntity = '')
     {
-        $this->entityName = $entityName;
-        $this->belongEntityName = $belongEntityName;
+        $this->parentEntity = $parentEntity;
+        $this->childEntity = $childEntity;
 
         parent::__construct(
             $this->createMessage(),
@@ -38,8 +38,8 @@ class EntityRelationException extends HelpcrunchException
 
     private function createMessage(): string
     {
-        $message = str_replace('%belong', $this->belongEntityName, self::MESSAGE);
+        $message = str_replace('%child', $this->childEntity, self::MESSAGE);
 
-        return str_replace('%entity', $this->entityName, $message);
+        return str_replace('%parent', $this->parentEntity, $message);
     }
 }
