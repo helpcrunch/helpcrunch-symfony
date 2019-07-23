@@ -114,6 +114,13 @@ abstract class RequestService
         ]);
     }
 
+    public function deleteAsync(string $organizationDomain, string $endpoint, array $data = []): void
+    {
+        $this->getClient()->deleteAsync($this->getUrl($organizationDomain, $endpoint), [
+            RequestOptions::JSON => $data
+        ]);
+    }
+
     /**
      * @param string $method
      * @param string $organizationDomain
