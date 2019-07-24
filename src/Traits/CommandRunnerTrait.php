@@ -1,4 +1,5 @@
 <?php
+
 namespace Helpcrunch\Traits;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;

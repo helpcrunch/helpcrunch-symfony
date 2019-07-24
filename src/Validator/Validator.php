@@ -3,9 +3,11 @@
 namespace Helpcrunch\Validator;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Exception\ValidationException;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Constraints\UniqueValue;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
@@ -30,14 +32,7 @@ final class Validator
         $this->container = $container;
     }
 
-    /**
-     * @param HelpcrunchEntity $entity
-     * @param array $data
-     * @return bool|HelpcrunchEntity
-     * @throws AnnotationException
-     * @throws \ReflectionException
-     */
-    public function isValid(HelpcrunchEntity $entity, array $data)
+    public function isValid(HelpcrunchEntity $entity, array $data): HelpcrunchEntity
     {
         $collector = new ValidationRulesCollector();
         $collector->collectRules($entity);
@@ -49,7 +44,7 @@ final class Validator
             return $this->createEntity($entity, $data);
         }
 
-        return false;
+        throw new ValidationException($this->errors);
     }
 
     public function getErrors(): array
