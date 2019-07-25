@@ -3,7 +3,7 @@
 namespace Helpcrunch\Service;
 
 /** Move interface to bundle */
-use App\Notification\NotificationInterface;
+use Helpcrunch\Notification\NotificationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EmailSenderService
