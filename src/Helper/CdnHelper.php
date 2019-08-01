@@ -33,14 +33,15 @@ class CdnHelper
 
     public static function getOptionsUrl(array $options): string
     {
-        $urlParts = ['-'];
+        $urlParts = [];
         foreach ($options as $optionKey => $optionValue) {
+            $urlParts[] = '-';
             $urlParts[] = $optionKey;
             $urlParts[] = $optionValue;
         }
 
         $url = '';
-        if (count($urlParts) > 1) {
+        if (count($urlParts)) {
             $url = implode('/', $urlParts) . '/';
         }
 
