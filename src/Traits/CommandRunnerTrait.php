@@ -18,7 +18,6 @@ trait CommandRunnerTrait
         $arguments = array_merge($arguments, $options);
 
         $input = new ArrayInput($arguments);
-
         $output = new NullOutput();
 
         return $application->run($input, $output);
