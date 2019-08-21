@@ -51,6 +51,11 @@ final class Authentication
      */
     private static $authenticatedAs = null;
 
+    /**
+     * @var null|string
+     */
+    public static $authToken = null;
+
     public static function setContainer(ContainerInterface $container): void
     {
         self::$container = $container;
@@ -109,7 +114,13 @@ final class Authentication
         self::$tokenHandler = $authHandlersFactory->getTokenHandler($request);
         if (self::$tokenHandler) {
             self::setAuthenticatedAs();
+            self::setAuthToken();
         }
+    }
+
+    private static function setAuthToken(): void
+    {
+        self::$authToken = self::$tokenHandler->getToken();
     }
 
     private static function setAuthenticatedAs(): void

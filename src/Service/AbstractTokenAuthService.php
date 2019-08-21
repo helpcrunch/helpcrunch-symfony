@@ -42,6 +42,14 @@ abstract class AbstractTokenAuthService
     }
 
     /**
+     * @return string|null
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
      * @param string|int $id
      * @return string
      */
