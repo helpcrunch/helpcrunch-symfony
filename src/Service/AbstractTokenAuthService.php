@@ -28,6 +28,11 @@ abstract class AbstractTokenAuthService
      */
     protected $token = null;
 
+    /**
+     * @var string|null
+     */
+    public static $userAuthToken = null;
+
     public function __construct(ContainerInterface $container, RequestStack $request = null)
     {
         $this->container = $container;
@@ -37,6 +42,7 @@ abstract class AbstractTokenAuthService
     public function setToken(string $token): self
     {
         $this->token = $token;
+        self::$userAuthToken = $token;
 
         return $this;
     }
