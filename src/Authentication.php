@@ -54,7 +54,7 @@ final class Authentication
     /**
      * @var null|string
      */
-    private static $authToken = null;
+    public static $authToken = null;
 
     public static function setContainer(ContainerInterface $container): void
     {
