@@ -36,6 +36,7 @@ abstract class HelpcrunchApiExceptionListener
     public function __construct(ContainerInterface $container, LoggerInterface $logger)
     {
         $this->container = $container;
+        $this->logger = $logger;
         $this->getKernel();
     }
 
