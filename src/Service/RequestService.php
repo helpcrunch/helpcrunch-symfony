@@ -20,7 +20,7 @@ abstract class RequestService
     /**
      * @var string
      */
-    protected static $endpointsPrefix = '/api';
+    protected static $endpointsPrefix = self::ENDPOINTS_PREFIX;
 
     /**
      * @var string
