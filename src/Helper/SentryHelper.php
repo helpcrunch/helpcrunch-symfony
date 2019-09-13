@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Helper;
 
+use Helpcrunch\Exception\HelpcrunchException;
 use \Raven_Client;
 
 class SentryHelper
@@ -39,7 +40,7 @@ class SentryHelper
 
     public static function logException($exception): void
     {
-        if (!self::$ravenClient) {
+        if (!self::$ravenClient || ($exception instanceof HelpcrunchException)) {
             return;
         }
 
