@@ -20,6 +20,11 @@ abstract class RequestService
     /**
      * @var string
      */
+    protected static $endpointsPrefix = '/api';
+
+    /**
+     * @var string
+     */
     protected $schema;
 
     /**
@@ -135,7 +140,7 @@ abstract class RequestService
 
     protected function getUrl(string $organizationDomain, string $endpoint): string
     {
-        return $this->schema . $organizationDomain . '.' . $this->domain . self::ENDPOINTS_PREFIX . $endpoint;
+        return $this->schema . $organizationDomain . '.' . $this->domain . static::$endpointsPrefix . $endpoint;
     }
 
     protected function setHeaders(): array
