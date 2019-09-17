@@ -111,7 +111,7 @@ class TokenAuthServiceFactory
     {
         /** @var ProductAuthService $tokenHandler */
         $tokenHandler = $this->container->get(ProductAuthService::class);
-        $tokenHandler->setProductId($matches['device']);
+        $tokenHandler->setProductId($matches['product']);
         $tokenHandler->setToken($matches['secret']);
 
         return $tokenHandler;
