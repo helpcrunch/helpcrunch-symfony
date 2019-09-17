@@ -14,6 +14,7 @@ use Helpcrunch\Service\TokenAuthService\DeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileUserAuthService;
 use Helpcrunch\Service\TokenAuthService\OrganizationAuthService;
+use Helpcrunch\Service\TokenAuthService\ProductAuthService;
 use Helpcrunch\Service\TokenAuthService\UserAuthService;
 use Helpcrunch\Service\TokenAuthServiceFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,6 +35,7 @@ final class Authentication
         OrganizationAuthService::class => self::AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY,
         InternalAppAuthService::class => self::AUTHENTICATED_AS_INTERNAL_APP,
         AutoLoginAuthService::class => self::AUTHENTICATED_AS_AUTO_LOGIN,
+        ProductAuthService::class => self::AUTHENTICATED_AS_DEVICE,
     ];
 
     /**

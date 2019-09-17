@@ -8,6 +8,7 @@ use Helpcrunch\Service\TokenAuthService\DeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileUserAuthService;
 use Helpcrunch\Service\TokenAuthService\OrganizationAuthService;
+use Helpcrunch\Service\TokenAuthService\ProductAuthService;
 use Helpcrunch\Service\TokenAuthService\UserAuthService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,7 +60,11 @@ class TokenAuthServiceFactory
         }
 
         if (preg_match('/^Bearer device="(?P<device>\S+?)"\s+secret="(?P<secret>\S+?)"$/i', $authHeader, $matches)) {
-            $this->createDeviceAuthHandler($matches);
+            return $this->createDeviceAuthHandler($matches);
+        }
+
+        if (preg_match('/^Bearer product="(?P<product>\S+?)"\s+secret="(?P<secret>\S+?)"$/i', $authHeader, $matches)) {
+            return $this->createProductAuthHandler($matches);
         }
 
         if (preg_match('/^Bearer api-key="(?P<apiKey>\S+?)"$/i', $authHeader, $matches)) {
@@ -97,6 +102,16 @@ class TokenAuthServiceFactory
         /** @var DeviceAuthService $tokenHandler */
         $tokenHandler = $this->container->get(DeviceAuthService::class);
         $tokenHandler->setDeviceId($matches['device']);
+        $tokenHandler->setToken($matches['secret']);
+
+        return $tokenHandler;
+    }
+
+    private function createProductAuthHandler(array $matches): ProductAuthService
+    {
+        /** @var ProductAuthService $tokenHandler */
+        $tokenHandler = $this->container->get(ProductAuthService::class);
+        $tokenHandler->setProductId($matches['device']);
         $tokenHandler->setToken($matches['secret']);
 
         return $tokenHandler;
