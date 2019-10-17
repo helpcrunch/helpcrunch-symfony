@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace Helpcrunch\Command;
 
 use App\Helper\DatabaseHelper;
 use Helpcrunch\Helper\SQLExecutor;
@@ -24,9 +24,6 @@ abstract class AbstractMultiDataBaseCommand extends AbstractCommand
         $SQLExecutor = new SQLExecutor($this->getDBConnectionService()->getConnection());
         foreach ($this->dataBaseList as $dataBaseName) {
             if (!$SQLExecutor->checkIfDatabaseExists($dataBaseName)) {
-                continue;
-            }
-            if ($dataBaseName != 'helpcrunch_copy') {
                 continue;
             }
             $this->changeDataBase($dataBaseName);
@@ -59,4 +56,6 @@ abstract class AbstractMultiDataBaseCommand extends AbstractCommand
         $this->dataBaseList = $allDatabases;
         $this->dataBaseCount = count($allDatabases);
     }
+
+    abstract protected function filterDatabases(): array;
 }

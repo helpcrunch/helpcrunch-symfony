@@ -3,6 +3,7 @@
 namespace Helpcrunch\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Helpcrunch\Service\DBConnectionService;
 use Helpcrunch\Service\RequestService\ApiRequestService;
 use Helpcrunch\Service\EmailSenderService;
 use Helpcrunch\Service\RedisService;
@@ -48,5 +49,10 @@ trait HelpcrunchServicesTrait
     public function getKnowledgeBaseApiRequestService(): KnowledgeBaseApiRequestService
     {
         return $this->container->get(KnowledgeBaseApiRequestService::class);
+    }
+
+    public function getDBConnectionService(): DBConnectionService
+    {
+        return $this->container->get(DBConnectionService::class);
     }
 }

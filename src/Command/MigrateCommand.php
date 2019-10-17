@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace Helpcrunch\Command;
 
 use Doctrine\Bundle\MigrationsBundle\Command\MigrationsMigrateDoctrineCommand;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 
-class MigrateCommand extends AbstractMultiDataBaseCommand
+abstract class MigrateCommand extends AbstractMultiDataBaseCommand
 {
     const DOCTRINE_MIGRATION_COMMAND = 'doctrine:migrations:migrate';
     const DOCTRINE_QUIET_FLAG = '-q';

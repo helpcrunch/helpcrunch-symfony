@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Command;
+namespace Helpcrunch\Command;
 
-use App\Traits\ServicesTrait;
 use Doctrine\ORM\EntityManager;
+use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use ReflectionObject;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 abstract class AbstractCommand extends Command
 {
     use LockableTrait;
-    use ServicesTrait;
+    use HelpcrunchServicesTrait;
 
     const QUIET_FLAG = 'quiet';
     const INTERACTIVE_FLAG = 'interactive';
