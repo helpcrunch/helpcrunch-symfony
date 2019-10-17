@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Kernel;
 
-abstract class HelpcrunchApiExceptionListener
+abstract class HelpcrunchExceptionListener
 {
     const DEFAULT_EXCEPTION_ERROR_MESSAGE = 'Server error';
 
