@@ -29,4 +29,9 @@ class DeviceAuthService extends AbstractTokenAuthService
 
         return $this;
     }
+
+    public function getDeviceId(): int
+    {
+        return $this->deviceId;
+    }
 }
