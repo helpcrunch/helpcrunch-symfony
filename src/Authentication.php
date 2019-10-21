@@ -46,7 +46,7 @@ final class Authentication
     /**
      * @var null|AbstractTokenAuthService
      */
-    public static $tokenHandler = null;
+    private static $tokenHandler = null;
 
     /**
      * @var null|string
