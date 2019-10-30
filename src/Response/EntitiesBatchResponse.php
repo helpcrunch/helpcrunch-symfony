@@ -15,11 +15,11 @@ class EntitiesBatchResponse extends SuccessResponse
     public function __construct(array $entities, $message = null, int $status = self::HTTP_OK)
     {
         $serializedEntities = [];
-        foreach ($entities as $entity) {
+        foreach ($entities as $key => $entity) {
             if (is_object($entity) && method_exists($entity, 'jsonSerialize')) {
                 $serializedEntities[] = $entity->jsonSerialize();
             } else {
-                $serializedEntities[] = $entity;
+                $serializedEntities[$key] = $entity;
             }
         }
 
