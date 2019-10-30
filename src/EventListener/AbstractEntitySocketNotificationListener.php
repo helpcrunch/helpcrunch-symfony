@@ -64,7 +64,7 @@ abstract class AbstractEntitySocketNotificationListener
         }
     }
 
-    private function prepareEventData(HelpcrunchEntity $entity): array
+    protected function prepareEventData(HelpcrunchEntity $entity): array
     {
         $eventId = $this->generateEventId($entity);
         if (!$eventId) {
@@ -83,7 +83,7 @@ abstract class AbstractEntitySocketNotificationListener
         return $eventData;
     }
 
-    private function getUpdatedEntityFields(HelpcrunchEntity $entity): array
+    protected function getUpdatedEntityFields(HelpcrunchEntity $entity): array
     {
         $data = [];
         foreach ($this->changesSet as $field) {
