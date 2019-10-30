@@ -14,17 +14,17 @@ abstract class AbstractEntitySocketNotificationListener
     /**
      * @var ContainerInterface
      */
-    private $container;
+    protected $container;
 
     /**
      * @var SocketService
      */
-    private $socketService;
+    protected $socketService;
 
     /**
      * @var array
      */
-    private $changesSet = [];
+    protected $changesSet = [];
 
     public function __construct(ContainerInterface $container, SocketService $socketService)
     {
