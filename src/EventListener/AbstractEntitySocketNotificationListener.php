@@ -96,9 +96,19 @@ abstract class AbstractEntitySocketNotificationListener
     private function sendEventNotification(array $data): void
     {
         $this->socketService->sendEvent($data);
+        $this->resetChangesSet();
+    }
+    
+    private function resetChangesSet(): void
+    {
+        $this->changesSet = [];
     }
 
     abstract protected function checkEntityTypeIsCorrect(HelpcrunchEntity $entity): bool;
 
+    /**
+     * @param HelpcrunchEntity $entity
+     * @return mixed
+     */
     abstract protected function generateEventId(HelpcrunchEntity $entity);
 }
