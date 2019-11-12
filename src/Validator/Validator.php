@@ -3,12 +3,14 @@
 namespace Helpcrunch\Validator;
 
 use DateTime;
+use Doctrine\Common\Util\Debug;
 use Helpcrunch\Entity\DateTimeFilteredInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Exception\ValidationException;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Constraints\UniqueValue;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Time;
 use Symfony\Component\Validator\Constraints\DateTime as DateTimeRule;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -73,6 +75,7 @@ final class Validator
                 $key,
                 $data[$key] ?? null
             );
+
             if ($targetEntity) {
                 $data[$key] = $targetEntity;
             }
@@ -118,6 +121,7 @@ final class Validator
             }
 
             $validationRules = $this->checkUniqueValueOnUpdate($entity, $validationRules);
+            $validationRules = $this->checkNotBlankConstraint($entity, $field, $validationRules);
 
             $violation = $validation->validate($data[$field] ?? null, $validationRules);
             $this->collectErrors($field, $violation);
@@ -144,6 +148,17 @@ final class Validator
     {
         foreach ($constraints as $key => $constraint) {
             if ($entity->id && ($constraint instanceof UniqueValue)) {
+                unset($constraints[$key]);
+            }
+        }
+
+        return $constraints;
+    }
+
+    private function checkNotBlankConstraint(HelpcrunchEntity $entity, string $field, array $constraints): array
+    {
+        foreach ($constraints as $key => $rule) {
+            if (($rule instanceof NotBlank) && !empty($entity->$field)) {
                 unset($constraints[$key]);
             }
         }
