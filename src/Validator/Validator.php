@@ -3,7 +3,6 @@
 namespace Helpcrunch\Validator;
 
 use DateTime;
-use Doctrine\Common\Util\Debug;
 use Helpcrunch\Entity\DateTimeFilteredInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Exception\ValidationException;
