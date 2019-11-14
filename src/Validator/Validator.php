@@ -136,7 +136,14 @@ final class Validator
 
             $rule = reset($validationRules[$key]);
             if (($rule instanceof DateTimeRule) || ($rule instanceof Time)) {
-                $data[$key] = new DateTime($value);
+                if (is_int($value)) {
+                    $date = new DateTime();
+                    $date->setTimestamp($value);
+                } else {
+                    $date = new DateTime($value);
+                }
+
+                $data[$key] = $date;
             }
         }
 
