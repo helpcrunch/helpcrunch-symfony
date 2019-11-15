@@ -2,14 +2,32 @@
 
 namespace Helpcrunch\EventListener;
 
+use App\Service\EntityFieldsParserService;
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Service\SocketService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractEntitySocketNotificationListener extends AbstractSocketNotificationListener
 {
     /**
+     * @var EntityFieldsParserService
+     */
+    private $entityFieldsParserService;
+
+    /**
      * @var array
      */
     protected $changesSet = [];
+
+    public function __construct(
+        ContainerInterface $container,
+        SocketService $socketService,
+        EntityFieldsParserService $entityFieldsParserService
+    ) {
+        parent::__construct($container, $socketService);
+
+        $this->entityFieldsParserService = $entityFieldsParserService;
+    }
 
     public function preUpdate(HelpcrunchEntity $entity): void
     {
@@ -54,7 +72,7 @@ abstract class AbstractEntitySocketNotificationListener extends AbstractSocketNo
     {
         $data = [];
         foreach ($this->changesSet as $field) {
-            $data[$field] = $entity->$field;
+            $data[$field] = $this->entityFieldsParserService->checkValue($entity->$field);
         }
 
         return $data;
