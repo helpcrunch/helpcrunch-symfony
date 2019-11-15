@@ -2,42 +2,14 @@
 
 namespace Helpcrunch\EventListener;
 
-use Helpcrunch\Service\SocketService;
-use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Entity\HelpcrunchEntity;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class AbstractEntitySocketNotificationListener
+abstract class AbstractEntitySocketNotificationListener extends AbstractSocketNotificationListener
 {
-    use HelpcrunchServicesTrait;
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var SocketService
-     */
-    protected $socketService;
-
     /**
      * @var array
      */
     protected $changesSet = [];
-
-    public function __construct(ContainerInterface $container, SocketService $socketService)
-    {
-        $this->container = $container;
-        $this->socketService = $socketService;
-    }
-
-    public function postPersist(HelpcrunchEntity $entity): void
-    {
-        if ($this->checkEntityTypeIsCorrect($entity)) {
-            $this->prepareAndSendEvent($entity);
-        }
-    }
 
     public function preUpdate(HelpcrunchEntity $entity): void
     {
@@ -49,19 +21,14 @@ abstract class AbstractEntitySocketNotificationListener
         }
     }
 
-    public function postUpdate(HelpcrunchEntity $entity): void
+    protected function checkSendPersistEventNotification(HelpcrunchEntity $entity): bool
     {
-        if (!empty($this->changesSet)) {
-            $this->prepareAndSendEvent($entity);
-        }
+        return $this->checkEntityTypeIsCorrect($entity);
     }
 
-    private function prepareAndSendEvent(HelpcrunchEntity $entity): void
+    protected function checkSendUpdateEventNotification(HelpcrunchEntity $entity): bool
     {
-        $eventData = $this->prepareEventData($entity);
-        if (!empty($eventData)) {
-            $this->sendEventNotification($eventData);
-        }
+        return !empty($this->changesSet);
     }
 
     protected function prepareEventData(HelpcrunchEntity $entity): array
@@ -93,12 +60,13 @@ abstract class AbstractEntitySocketNotificationListener
         return $data;
     }
 
-    private function sendEventNotification(array $data): void
+    protected function sendEventNotification(array $data): void
     {
-        $this->socketService->sendEvent($data);
+        parent::sendEventNotification($data);
+
         $this->resetChangesSet();
     }
-    
+
     private function resetChangesSet(): void
     {
         $this->changesSet = [];
