@@ -33,4 +33,9 @@ class ParametersValidatorHelper
     {
         return is_object($value);
     }
+
+    public static function isNumericOrNull($value): bool
+    {
+        return is_numeric($value) || ($value === null) || ($value === 'null');
+    }
 }
