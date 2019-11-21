@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Service;
 
+use Exception;
 use \Memcached;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
@@ -28,8 +29,12 @@ class MemcachedService
     public function get(string $key)
     {
         $value = $this->memcached->get($key);
-        if (!empty($value)) {
-            $value = unserialize($value);
+        try {
+            $value = json_decode($value, true);
+        } catch (Exception $exception) {
+            if (!empty($value)) {
+                $value = unserialize($value);
+            }
         }
 
         return $value;
