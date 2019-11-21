@@ -3,6 +3,7 @@
 namespace Helpcrunch\Service;
 
 use DateTime;
+use Helpcrunch\Entity\HelpcrunchEntity;
 
 class EntityFieldsParserService
 {
@@ -21,6 +22,10 @@ class EntityFieldsParserService
     {
         if ($value instanceof DateTime) {
             $value = $this->updateDateTimeValue($value);
+        }
+
+        if ($value instanceof HelpcrunchEntity) {
+            $value = $value->id;
         }
 
         return $value;
