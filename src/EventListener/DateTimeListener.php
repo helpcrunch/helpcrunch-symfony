@@ -4,10 +4,14 @@ namespace Helpcrunch\EventListener;
 
 use DateTime;
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Traits\HelpcrunchServicesTrait;
+use Helpcrunch\Traits\UpdateEventTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DateTimeListener
 {
+    use HelpcrunchServicesTrait, UpdateEventTrait;
+
     const CREATED_AT_FIELD = 'createdAt';
     const UPDATED_AT_FIELD = 'updatedAt';
 
@@ -35,7 +39,10 @@ class DateTimeListener
     public function preUpdate(HelpcrunchEntity $entity): void
     {
         if (property_exists($entity, self::UPDATED_AT_FIELD)) {
-            $entity->{self::UPDATED_AT_FIELD} = new DateTime();
+            $oldValue = $entity->{self::UPDATED_AT_FIELD};
+            $newValue = new DateTime();
+            $entity->{self::UPDATED_AT_FIELD} = $newValue;
+            $this->notifyFieldChanged($entity, self::UPDATED_AT_FIELD, $oldValue, $newValue);
         }
     }
 }
