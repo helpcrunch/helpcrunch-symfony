@@ -12,4 +12,5 @@ class InnerErrorCodes
     const PARENT_ENTITIES_MISMATCH = 'parent_entities_mismatch';
     const POST_ENTITY_VALIDATION_FAILED = 'create_entity_fields_validation_failed';
     const PUT_ENTITY_VALIDATION_FAILED = 'update_entity_fields_validation_failed';
+    const SERVER_ERROR = 'server_error';
 }
