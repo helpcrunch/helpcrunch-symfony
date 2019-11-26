@@ -13,10 +13,7 @@ class SuccessResponse extends JsonResponse
 {
     public function __construct($data = [], $message = null, int $status = self::HTTP_OK)
     {
-        if (!is_array($data)) {
-            $data = ['data' => $data];
-        }
-        $responseData = $data;
+        $responseData['data'] = $data;
         if ($message) {
             $responseData['message'] = $message;
         }
