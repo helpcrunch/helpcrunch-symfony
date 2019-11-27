@@ -19,7 +19,7 @@ class EntitiesBatchResponse extends SuccessResponse
             if (is_object($entity) && method_exists($entity, 'jsonSerialize')) {
                 $serializedEntities[] = $entity->jsonSerialize();
             } else {
-                $serializedEntities[] = $entity;
+                $serializedEntities = $entity;
             }
         }
 

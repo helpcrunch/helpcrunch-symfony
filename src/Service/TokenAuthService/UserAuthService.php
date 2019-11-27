@@ -4,11 +4,6 @@ namespace Helpcrunch\Service\TokenAuthService;
 
 class UserAuthService extends MobileUserAuthService
 {
-    /**
-     * @var int
-     */
-    private $userId;
-
     public function isTokenValid(bool $isLogin = false): bool
     {
         if (!$this->token || !$this->userId) {
@@ -49,8 +44,8 @@ class UserAuthService extends MobileUserAuthService
     /**
      * @return int|null
      */
-    public function getUserId()
+    public function getUserId(): int
     {
-        return $this->userId;
+        return $this->userId ?? 0;
     }
 }

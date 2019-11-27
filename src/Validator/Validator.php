@@ -2,17 +2,18 @@
 
 namespace Helpcrunch\Validator;
 
+use DateTime;
 use Helpcrunch\Entity\DateTimeFilteredInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Exception\ValidationException;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Constraints\UniqueValue;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Time;
+use Symfony\Component\Validator\Constraints\DateTime as DateTimeRule;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
-use Doctrine\Common\Annotations\AnnotationException;
 
 final class Validator
 {
@@ -41,6 +42,9 @@ final class Validator
         $data = $this->validateRelations($entity, $collector->getEntitiesRelations(), $data);
 
         $data = $this->filterDateTimes($entity, $data);
+        $validationRules = $collector->getValidationRules();
+
+        $data = $this->checkDateTimeValues($validationRules, $data);
         $this->validateData($entity, $collector->getValidationRules(), $data);
         if (!count($this->errors)) {
             return $this->createEntity($entity, $data);
@@ -70,6 +74,7 @@ final class Validator
                 $key,
                 $data[$key] ?? null
             );
+
             if ($targetEntity) {
                 $data[$key] = $targetEntity;
             }
@@ -115,16 +120,51 @@ final class Validator
             }
 
             $validationRules = $this->checkUniqueValueOnUpdate($entity, $validationRules);
+            $validationRules = $this->checkNotBlankConstraint($entity, $field, $validationRules);
 
             $violation = $validation->validate($data[$field] ?? null, $validationRules);
             $this->collectErrors($field, $violation);
         }
     }
 
+    private function checkDateTimeValues(array $validationRules, array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (empty($validationRules[$key]) || is_null($value)) {
+                continue;
+            }
+
+            $rule = reset($validationRules[$key]);
+            if (($rule instanceof DateTimeRule) || ($rule instanceof Time)) {
+                if (is_int($value)) {
+                    $date = new DateTime();
+                    $date->setTimestamp($value);
+                } else {
+                    $date = new DateTime($value);
+                }
+
+                $data[$key] = $date;
+            }
+        }
+
+        return $data;
+    }
+
     private function checkUniqueValueOnUpdate(HelpcrunchEntity $entity, array $constraints): array
     {
         foreach ($constraints as $key => $constraint) {
             if ($entity->id && ($constraint instanceof UniqueValue)) {
+                unset($constraints[$key]);
+            }
+        }
+
+        return $constraints;
+    }
+
+    private function checkNotBlankConstraint(HelpcrunchEntity $entity, string $field, array $constraints): array
+    {
+        foreach ($constraints as $key => $rule) {
+            if (($rule instanceof NotBlank) && !empty($entity->$field)) {
                 unset($constraints[$key]);
             }
         }

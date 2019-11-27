@@ -3,6 +3,7 @@
 namespace Helpcrunch\Service;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\EntityManagerInterface;
 use Helpcrunch\Helper\SQLExecutor;
@@ -12,8 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DBConnectionService
 {
     use HelpcrunchServicesTrait;
-
-    const HELPCRUNCH_DOMAIN = 'helpcrunch';
 
     /**
      * @var Connection $connection
@@ -51,5 +50,28 @@ class DBConnectionService
         } catch (DriverException $exception) {
             SQLExecutor::checkException($exception);
         }
+    }
+
+    public function getConnection(string $dataBaseName = null): Connection
+    {
+        $params = [
+            'driver' => $this->entityManager->getConnection()->getDriver()->getName(),
+            'port' => $this->entityManager->getConnection()->getPort(),
+            'user' => $this->entityManager->getConnection()->getUsername(),
+            'host' => $this->entityManager->getConnection()->getHost(),
+        ];
+        if ($dataBaseName) {
+            $params['dbname'] = $dataBaseName;
+        }
+        if ($password = $this->entityManager->getConnection()->getPassword()) {
+            $params['password'] = $password;
+        }
+        $this->connection = DriverManager::getConnection(
+            $params,
+            $this->entityManager->getConfiguration(),
+            $this->entityManager->getEventManager()
+        );
+
+        return $this->connection;
     }
 }
