@@ -3,7 +3,6 @@
 namespace Helpcrunch\Response;
 
 use Helpcrunch\Entity\HelpcrunchEntity;
-use JsonSerializable;
 
 class EntityResponse extends SuccessResponse
 {

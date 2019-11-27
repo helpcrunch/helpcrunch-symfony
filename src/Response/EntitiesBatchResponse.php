@@ -23,6 +23,6 @@ class EntitiesBatchResponse extends SuccessResponse
             }
         }
 
-        parent::__construct(['data' => $serializedEntities], $message, $status);
+        parent::__construct($serializedEntities, $message, $status);
     }
 }
