@@ -7,15 +7,14 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
-class SuccessResponse extends JsonResponse
+class SuccessResponse extends HelpcrunchResponse
 {
     public function __construct($data = [], $message = null, int $status = self::HTTP_OK)
     {
         $responseData['data'] = $data;
         if ($message) {
-            $responseData['message'] = $message;
+            $responseData['message'] = $this->getMessage($message);
         }
         $responseData['success'] = true;
 
