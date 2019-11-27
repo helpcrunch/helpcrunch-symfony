@@ -5,6 +5,7 @@ namespace Helpcrunch\Response;
 class InnerErrorCodes
 {
     const ENTITY_NOT_FOUND = 'entity_not_found';
+    const ENTITY_ALREADY_EXIST = 'entity_already_exist';
     const INVALID_ENTITY_ID = 'invalid_entity_id';
     const INVALID_PARAMETER = 'invalid_parameter';
     const MALFORMED_JSON = 'malformed_json';
