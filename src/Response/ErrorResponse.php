@@ -6,10 +6,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ErrorResponse extends JsonResponse
 {
-    const DEFAULT_ERROR_MESSAGE_INFO = 'Something went wrong';
     const DEFAULT_ERROR_HEADERS = [
         'Access-Control-Allow-Origin' => '*'
     ];
+
+    protected static $defaultErrorMessageInfo = 'Something went wrong';
 
     public function __construct($message, string $innerErrorCode = null, int $status = self::HTTP_BAD_REQUEST, $errors = [])
     {
@@ -47,6 +48,6 @@ class ErrorResponse extends JsonResponse
      */
     private function getMessageInfo($clientMessage): string
     {
-        return is_string($clientMessage) ? $clientMessage : self::DEFAULT_ERROR_MESSAGE_INFO;
+        return is_string($clientMessage) ? $clientMessage : static::$defaultErrorMessageInfo;
     }
 }

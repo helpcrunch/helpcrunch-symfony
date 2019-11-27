@@ -15,6 +15,7 @@ use Helpcrunch\Response\EntityResponse;
 use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Response\InnerErrorCodes;
 use Helpcrunch\Response\SuccessResponse;
+use Helpcrunch\Response\ValidationErrorResponse;
 use Helpcrunch\Service\RedisService;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -121,7 +122,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
         $validator = new Validator($this->container);
         if (!($entity = $validator->isValid($entity, $request->request->all()))) {
-            return new ErrorResponse(
+            return new ValidationErrorResponse(
                 $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
                 JsonResponse::HTTP_BAD_REQUEST
@@ -174,7 +175,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
         $validator = new Validator($this->container);
         if (!($entity = $validator->isValid($entity, $data))) {
-            return new ErrorResponse(
+            return new ValidationErrorResponse(
                 $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
                 JsonResponse::HTTP_BAD_REQUEST
