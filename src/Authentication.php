@@ -141,6 +141,11 @@ final class Authentication
         return self::$authenticatedAs == self::AUTHENTICATED_AS_DEVICE;
     }
 
+    public static function isAuthenticatedAsMobile(): bool
+    {
+        return self::$authenticatedAs == self::AUTHENTICATED_AS_MOBILE_USER;
+    }
+
     public static function isAuthenticatedAsOrganizationPublicKey(): bool
     {
         return self::$authenticatedAs == self::AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY;
