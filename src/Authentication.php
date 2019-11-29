@@ -142,7 +142,8 @@ final class Authentication
 
     public static function isAuthenticatedAsDevice(): bool
     {
-        return self::$authenticatedAs == self::AUTHENTICATED_AS_DESKTOP_DEVICE;
+        return (self::$authenticatedAs == self::AUTHENTICATED_AS_DESKTOP_DEVICE) ||
+            (self::$authenticatedAs == self::AUTHENTICATED_AS_MOBILE_DEVICE);
     }
 
     public static function isAuthenticatedAsMobile(): bool
