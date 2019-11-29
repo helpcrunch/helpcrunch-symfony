@@ -5,6 +5,7 @@ namespace Helpcrunch\Controller;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Helper\ParametersValidatorHelper;
@@ -73,6 +74,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param Request $request
@@ -89,6 +91,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param int $id
@@ -109,6 +112,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param Request $request
@@ -143,6 +147,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param Request $request
@@ -189,6 +194,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param int $id

@@ -3,6 +3,7 @@
 namespace Helpcrunch;
 
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecificationInterface;
 use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
@@ -26,7 +27,7 @@ final class Authentication
     const AUTHENTICATED_AS_DESKTOP_USER = UserAuthSpecification::class;
     const AUTHENTICATED_AS_MOBILE_USER = UserAuthSpecification::class;
     const AUTHENTICATED_AS_DESKTOP_DEVICE = DeviceAuthSpecification::class;
-    const AUTHENTICATED_AS_MOBILE_DEVICE = DeviceAuthSpecification::class;
+    const AUTHENTICATED_AS_MOBILE_DEVICE = MobileDeviceAuthSpecification::class;
     const AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY = PublicApiAuthSpecification::class;
     const AUTHENTICATED_AS_INTERNAL_APP = InternalAppAuthSpecification::class;
     const AUTHENTICATED_AS_AUTO_LOGIN = AutoLoginAuthSpecification::class;
