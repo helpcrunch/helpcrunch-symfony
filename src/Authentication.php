@@ -4,6 +4,7 @@ namespace Helpcrunch;
 
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\MobileUserAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecificationInterface;
 use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
@@ -25,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class Authentication
 {
     const AUTHENTICATED_AS_DESKTOP_USER = UserAuthSpecification::class;
-    const AUTHENTICATED_AS_MOBILE_USER = UserAuthSpecification::class;
+    const AUTHENTICATED_AS_MOBILE_USER = MobileUserAuthSpecification::class;
     const AUTHENTICATED_AS_DESKTOP_DEVICE = DeviceAuthSpecification::class;
     const AUTHENTICATED_AS_MOBILE_DEVICE = MobileDeviceAuthSpecification::class;
     const AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY = PublicApiAuthSpecification::class;
