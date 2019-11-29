@@ -2,7 +2,7 @@
 
 namespace Helpcrunch\Traits;
 
-use App\Serializer\ExcludePolicyFunctionsProvider;
+use Helpcrunch\Serializer\ExcludePolicyFunctionsProvider;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;

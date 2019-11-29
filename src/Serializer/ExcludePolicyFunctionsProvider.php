@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Serializer;
+namespace Helpcrunch\Serializer;
 
 use Helpcrunch\Authentication;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
