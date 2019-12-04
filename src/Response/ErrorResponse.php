@@ -10,10 +10,7 @@ class ErrorResponse extends HelpcrunchResponse
 
     public function __construct($message, string $innerErrorCode = null, int $status = self::HTTP_BAD_REQUEST, $errors = [])
     {
-        $responseData = [
-            'message' => $this->getMessage($message),
-            'success' => false,
-        ];
+        $responseData['message'] = $this->getMessage($message);
         if ($innerErrorCode) {
             $responseData['code'] = $innerErrorCode;
         }

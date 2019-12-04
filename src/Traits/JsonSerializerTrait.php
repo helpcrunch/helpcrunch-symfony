@@ -15,10 +15,7 @@ trait JsonSerializerTrait
 {
     public function jsonSerialize(): array
     {
-        $context = new SerializationContext();
-        $context->setSerializeNull(true);
-
-        return $this->createSerializer()->toArray($this, $context);
+        return $this->createSerializer()->toArray($this, $this->getSerializationContext());
     }
 
     protected function createSerializer(): Serializer
@@ -29,15 +26,23 @@ trait JsonSerializerTrait
                     new IdenticalPropertyNamingStrategy()
                 )
             )
-            ->setExpressionEvaluator(new ExpressionEvaluator($this->createAuthenticatedAsDeviceEvaluator()))
+            ->setExpressionEvaluator(new ExpressionEvaluator($this->createAuthenticatedEvaluator()))
             ->build();
     }
 
-    protected function createAuthenticatedAsDeviceEvaluator(): ExpressionLanguage
+    protected function getSerializationContext(): SerializationContext
     {
-        $language = new ExpressionLanguage();
-        $language->registerProvider(new ExcludePolicyFunctionsProvider());
+        $serializationContext = new SerializationContext();
+        $serializationContext->setSerializeNull(true);
 
-        return $language;
+        return $serializationContext;
+    }
+
+    protected function createAuthenticatedEvaluator(): ExpressionLanguage
+    {
+        $expressionLanguage = new ExpressionLanguage();
+        $expressionLanguage->registerProvider(new ExcludePolicyFunctionsProvider());
+
+        return $expressionLanguage;
     }
 }
