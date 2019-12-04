@@ -3,7 +3,6 @@
 namespace Helpcrunch\Traits;
 
 use Helpcrunch\Serializer\ExcludePolicyFunctionsProvider;
-use Helpcrunch\Serializer\Accessor\HelpcrunchAccessorStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
@@ -21,17 +20,14 @@ trait JsonSerializerTrait
 
     protected function createSerializer(): Serializer
     {
-        $serializerBuilder = SerializerBuilder::create()
+        return SerializerBuilder::create()
             ->setPropertyNamingStrategy(
                 new SerializedNameAnnotationStrategy(
                     new IdenticalPropertyNamingStrategy()
                 )
             )
-            ->setExpressionEvaluator(new ExpressionEvaluator($this->createAuthenticatedEvaluator()));
-
-        $serializerBuilder->setAccessorStrategy(new HelpcrunchAccessorStrategy());
-
-        return $serializerBuilder->build();
+            ->setExpressionEvaluator(new ExpressionEvaluator($this->createAuthenticatedEvaluator()))
+            ->build();
     }
 
     protected function getSerializationContext(): SerializationContext
