@@ -212,7 +212,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
 
-        return new SuccessResponse([], 'entity deleted');
+        return new SuccessResponse(null, 'entity deleted');
     }
 
     /**
