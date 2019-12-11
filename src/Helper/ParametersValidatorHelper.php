@@ -38,4 +38,9 @@ class ParametersValidatorHelper
     {
         return is_numeric($value) || ($value === null) || ($value === 'null');
     }
+
+    public static function isBool($value): bool
+    {
+        return is_bool($value) || ($value === 'true') || ($value === 'false');
+    }
 }
