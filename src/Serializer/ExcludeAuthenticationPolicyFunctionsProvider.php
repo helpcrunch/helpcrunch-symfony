@@ -6,7 +6,7 @@ use Helpcrunch\Authentication;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
-class ExcludePolicyFunctionsProvider implements ExpressionFunctionProviderInterface
+class ExcludeAuthenticationPolicyFunctionsProvider implements ExpressionFunctionProviderInterface
 {
     public function getFunctions(): array
     {

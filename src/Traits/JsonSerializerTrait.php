@@ -2,7 +2,7 @@
 
 namespace Helpcrunch\Traits;
 
-use Helpcrunch\Serializer\ExcludePolicyFunctionsProvider;
+use Helpcrunch\Serializer\ExcludeAuthenticationPolicyFunctionsProvider;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
@@ -41,7 +41,7 @@ trait JsonSerializerTrait
     protected function createAuthenticatedEvaluator(): ExpressionLanguage
     {
         $expressionLanguage = new ExpressionLanguage();
-        $expressionLanguage->registerProvider(new ExcludePolicyFunctionsProvider());
+        $expressionLanguage->registerProvider(new ExcludeAuthenticationPolicyFunctionsProvider());
 
         return $expressionLanguage;
     }
