@@ -19,7 +19,7 @@ abstract class AbstractDefaultEntitiesHelper
     /**
      * @var ContainerInterface
      */
-    private $container;
+    protected $container;
 
     /**
      * @var EntityManagerInterface
