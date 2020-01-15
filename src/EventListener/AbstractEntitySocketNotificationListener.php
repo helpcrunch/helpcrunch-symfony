@@ -31,12 +31,17 @@ abstract class AbstractEntitySocketNotificationListener extends AbstractSocketNo
 
     public function preUpdate(HelpcrunchEntity $entity): void
     {
-        if ($this->checkSendPersistEventNotification($entity)) {
+        if ($this->checkPrepareUpdateEventNotification($entity)) {
             $unitOfWork = $this->getEntityManager()->getUnitOfWork();
             $updatedFields = $unitOfWork->getEntityChangeSet($entity);
 
             $this->changesSet = array_keys($updatedFields);
         }
+    }
+
+    protected function checkPrepareUpdateEventNotification(HelpcrunchEntity $entity): bool
+    {
+        return $this->checkSendPersistEventNotification($entity);
     }
 
     protected function checkSendUpdateEventNotification(HelpcrunchEntity $entity): bool
