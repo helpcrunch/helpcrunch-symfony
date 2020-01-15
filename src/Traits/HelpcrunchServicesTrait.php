@@ -3,6 +3,7 @@
 namespace Helpcrunch\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Helpcrunch\Helper\DefaultEntities\AbstractDefaultEntitiesHelper;
 use Helpcrunch\Service\DBConnectionService;
 use Helpcrunch\Service\RequestService\ApiRequestService;
 use Helpcrunch\Service\EmailSenderService;
@@ -13,6 +14,8 @@ use Helpcrunch\Service\TokenValidationService;
 
 /**
  * @property object container
+ *
+ * @mixin AbstractDefaultEntitiesHelper
  */
 trait HelpcrunchServicesTrait
 {
