@@ -2,8 +2,8 @@
 
 namespace Helpcrunch\EventListener;
 
-use App\Entity\SocketRequiredFieldsInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\Entity\SocketRequiredFieldsInterface;
 use Helpcrunch\Service\EntityFieldsParserService;
 use Helpcrunch\Service\SocketService;
 use Symfony\Component\DependencyInjection\ContainerInterface;

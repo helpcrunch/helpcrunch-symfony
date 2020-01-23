@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace Helpcrunch\Entity;
 
 interface SocketRequiredFieldsInterface
 {
