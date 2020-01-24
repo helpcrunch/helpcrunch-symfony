@@ -21,7 +21,7 @@ class ParametersValidatorHelper
 
     public static function clearString(string $string): string
     {
-        return preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $string);
+        return preg_replace('/[^\p{L}\p{N}_@.]+/u', ' ', $string);
     }
 
     public static function isValuePresented($value, array $values): bool
