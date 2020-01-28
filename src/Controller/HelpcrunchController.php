@@ -5,6 +5,7 @@ namespace Helpcrunch\Controller;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Helper\ParametersValidatorHelper;
@@ -15,6 +16,7 @@ use Helpcrunch\Response\EntityResponse;
 use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Response\InnerErrorCodes;
 use Helpcrunch\Response\SuccessResponse;
+use Helpcrunch\Response\ValidationErrorResponse;
 use Helpcrunch\Service\RedisService;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -72,6 +74,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param Request $request
@@ -88,6 +91,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param int $id
@@ -108,6 +112,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param Request $request
@@ -121,7 +126,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
         $validator = new Validator($this->container);
         if (!($entity = $validator->isValid($entity, $request->request->all()))) {
-            return new ErrorResponse(
+            return new ValidationErrorResponse(
                 $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
                 JsonResponse::HTTP_BAD_REQUEST
@@ -142,6 +147,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param Request $request
@@ -174,7 +180,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
         $validator = new Validator($this->container);
         if (!($entity = $validator->isValid($entity, $data))) {
-            return new ErrorResponse(
+            return new ValidationErrorResponse(
                 $validator->getErrors(),
                 InnerErrorCodes::POST_ENTITY_VALIDATION_FAILED,
                 JsonResponse::HTTP_BAD_REQUEST
@@ -188,6 +194,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
     /**
      * @UserAuthSpecification()
      * @DeviceAuthSpecification()
+     * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
      *
      * @param int $id
@@ -205,7 +212,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
 
-        return new SuccessResponse([], 'entity deleted');
+        return new SuccessResponse(null, 'entity deleted');
     }
 
     /**
