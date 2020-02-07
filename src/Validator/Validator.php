@@ -2,16 +2,13 @@
 
 namespace Helpcrunch\Validator;
 
-use DateTime;
-use Helpcrunch\Entity\DateTimeFilteredInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
+use Helpcrunch\EntityDTO\HelpcrunchEntityDTO;
 use Helpcrunch\Exception\ValidationException;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Constraints\UniqueValue;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Time;
-use Symfony\Component\Validator\Constraints\DateTime as DateTimeRule;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
 
@@ -34,23 +31,17 @@ final class Validator
         $this->container = $container;
     }
 
-    public function isValid(HelpcrunchEntity $entity, array $data): HelpcrunchEntity
+    public function isValid(HelpcrunchEntity $entity, HelpcrunchEntityDTO $entityDTO): void
     {
         $collector = new ValidationRulesCollector();
         $collector->collectRules($entity);
 
-        $data = $this->validateRelations($entity, $collector->getEntitiesRelations(), $data);
+        $this->validateRelations($entity, $entityDTO, $collector->getEntitiesRelations());
+        $this->validateData($entity, $entityDTO, $collector->getValidationRules());
 
-        $data = $this->filterDateTimes($entity, $data);
-        $validationRules = $collector->getValidationRules();
-
-        $data = $this->checkDateTimeValues($validationRules, $data);
-        $this->validateData($entity, $collector->getValidationRules(), $data);
-        if (!count($this->errors)) {
-            return $this->createEntity($entity, $data);
+        if (count($this->errors)) {
+            throw new ValidationException($this->errors);
         }
-
-        throw new ValidationException($this->errors);
     }
 
     public function getErrors(): array
@@ -58,61 +49,47 @@ final class Validator
         return $this->errors;
     }
 
-    private function validateRelations(HelpcrunchEntity $entity, array $relations, array $data): array
+    private function validateRelations(HelpcrunchEntity $entity, HelpcrunchEntityDTO $entityDTO, array $relations): void
     {
         foreach ($relations as $key => $relation) {
-            if ($entity->id && empty($data[$key])) {
+            $dtoValue = $entityDTO->{$key};
+            if ($entity->id && empty($dtoValue)) {
                 continue;
             }
             if (empty($relation['targetEntity'])) {
                 continue;
             }
 
-            $targetEntity = $this->getRelationIfExists(
+            $this->checkRelationIfExists(
                 $relation['targetEntity'],
                 $relation['nullable'] ?? true,
                 $key,
-                $data[$key] ?? null
+                $entityDTO->{$key} ?? null
             );
-
-            if ($targetEntity) {
-                $data[$key] = $targetEntity;
-            }
         }
-
-        return $data;
     }
 
-    private function getRelationIfExists(
+    private function checkRelationIfExists(
         string $targetEntityClass,
         bool $nullAble,
         string $targetEntityField,
-        int $targetEntityId = null
-    ) {
-        $repository = $this->getEntityManager()->getRepository($targetEntityClass);
-
-        if ($targetEntityId) {
-            $targetEntity = $repository->find($targetEntityId);
-
-            if ($targetEntity) {
-                return $targetEntity;
-            } elseif (!$targetEntity && !$nullAble) {
-                $this->errors[$targetEntityField] = $targetEntityClass . ' does not exist';
-            }
-        } else {
-            if (!$nullAble) {
-                $this->errors[$targetEntityField] = $targetEntityClass . ' can not be null';
-            }
+        HelpcrunchEntity $entity = null
+    ): void {
+        if (!$entity && !$nullAble) {
+            $this->errors[$targetEntityField] = $targetEntityClass . ' can not be null';
         }
 
-        return false;
+        if (!($entity instanceof $targetEntityClass)) {
+            $this->errors[$targetEntityField] = $targetEntityClass . ' does not exist';
+        }
     }
 
-    private function validateData(HelpcrunchEntity $entity, array $rules, array $data): void
+    private function validateData(HelpcrunchEntity $entity, HelpcrunchEntityDTO $entityDTO, array $rules): void
     {
         $validation = Validation::createValidator();
         foreach ($rules as $field => $validationRules) {
-            if ($entity->id && empty($data[$field])) {
+            $dtoValue = $entityDTO->{$field};
+            if ($entity->id && empty($dtoValue)) {
                 continue;
             }
             if (empty($rules[$field])) {
@@ -122,32 +99,9 @@ final class Validator
             $validationRules = $this->checkUniqueValueOnUpdate($entity, $validationRules);
             $validationRules = $this->checkNotBlankConstraint($entity, $field, $validationRules);
 
-            $violation = $validation->validate($data[$field] ?? null, $validationRules);
+            $violation = $validation->validate($entityDTO->{$field} ?? null, $validationRules);
             $this->collectErrors($field, $violation);
         }
-    }
-
-    private function checkDateTimeValues(array $validationRules, array $data): array
-    {
-        foreach ($data as $key => $value) {
-            if (empty($validationRules[$key]) || is_null($value)) {
-                continue;
-            }
-
-            $rule = reset($validationRules[$key]);
-            if (($rule instanceof DateTimeRule) || ($rule instanceof Time)) {
-                if (is_int($value)) {
-                    $date = new DateTime();
-                    $date->setTimestamp($value);
-                } else {
-                    $date = new DateTime($value);
-                }
-
-                $data[$key] = $date;
-            }
-        }
-
-        return $data;
     }
 
     private function checkUniqueValueOnUpdate(HelpcrunchEntity $entity, array $constraints): array
@@ -164,7 +118,8 @@ final class Validator
     private function checkNotBlankConstraint(HelpcrunchEntity $entity, string $field, array $constraints): array
     {
         foreach ($constraints as $key => $rule) {
-            if (($rule instanceof NotBlank) && !empty($entity->$field)) {
+            $value = $entity->{$field};
+            if (($rule instanceof NotBlank) && !empty($value)) {
                 unset($constraints[$key]);
             }
         }
@@ -177,31 +132,5 @@ final class Validator
         if ($violation->count()) {
             $this->errors[$name] = $violation[0]->getMessage();
         }
-    }
-
-    private function createEntity(HelpcrunchEntity $entity, array $data): HelpcrunchEntity
-    {
-        foreach ($data as $key => $value) {
-            if (property_exists($entity, $key)) {
-                $entity->$key = $value;
-            }
-        }
-
-        return $entity;
-    }
-
-    private function filterDateTimes(HelpcrunchEntity $entity, array $data): array
-    {
-        if ($entity instanceof DateTimeFilteredInterface) {
-            if (!empty($data['createdAt'])) {
-                unset($data['createdAt']);
-            }
-
-            if (!empty($data['updatedAt'])) {
-                unset($data['updatedAt']);
-            }
-        }
-
-        return $data;
     }
 }

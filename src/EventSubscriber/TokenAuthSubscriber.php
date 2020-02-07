@@ -12,6 +12,7 @@ use Helpcrunch\Service\AbstractTokenAuthService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Doctrine\Common\Annotations\Reader;
@@ -66,6 +67,8 @@ class TokenAuthSubscriber implements EventSubscriberInterface
                 );
             });
         }
+
+        $this->defineAuthenticatedUser($event->getRequest());
     }
 
     /**
@@ -163,6 +166,13 @@ class TokenAuthSubscriber implements EventSubscriberInterface
     {
         return $class->isSubclassOf(HelpcrunchController::class)
             || ($class->getName() == HelpcrunchController::class);
+    }
+
+    private function defineAuthenticatedUser(Request $request): void
+    {
+        if (method_exists($request, 'defineAuthenticatedUser')) {
+            $request->defineAuthenticatedUser($this->container);
+        }
     }
 
     public static function getSubscribedEvents(): array
