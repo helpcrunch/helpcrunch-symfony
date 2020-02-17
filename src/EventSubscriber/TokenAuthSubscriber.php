@@ -2,7 +2,7 @@
 
 namespace Helpcrunch\EventSubscriber;
 
-use Helpcrunch\Controller\HelpcrunchController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Event\CreateTokenEvent;
 use Helpcrunch\Annotation\UnauthorizedAction;
@@ -164,8 +164,8 @@ class TokenAuthSubscriber implements EventSubscriberInterface
 
     private function checkIsHelpcrunchController(ReflectionClass $class): bool
     {
-        return $class->isSubclassOf(HelpcrunchController::class)
-            || ($class->getName() == HelpcrunchController::class);
+        return $class->isSubclassOf(AbstractFOSRestController::class)
+            || ($class->getName() == AbstractFOSRestController::class);
     }
 
     private function defineAuthenticatedUser(Request $request): void

@@ -75,7 +75,11 @@ final class Validator
         string $targetEntityField,
         HelpcrunchEntity $entity = null
     ): void {
-        if (!$entity && !$nullAble) {
+        if ($nullAble) {
+            return;
+        }
+
+        if (!$entity) {
             $this->errors[$targetEntityField] = $targetEntityClass . ' can not be null';
         }
 
