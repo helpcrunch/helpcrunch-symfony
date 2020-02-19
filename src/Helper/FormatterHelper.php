@@ -16,6 +16,6 @@ class FormatterHelper
 
     public static function clearString(string $string): string
     {
-        return preg_replace('/[^\p{L}\p{N}0-9_ %\[\]\.\(\)%\_\-@]/mu', ' ', $string);
+        return preg_replace('/[^\p{L}\p{N}_@\.]+/u', ' ', $string);
     }
 }
