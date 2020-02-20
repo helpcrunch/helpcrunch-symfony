@@ -7,7 +7,7 @@ use Helpcrunch\Entity\HelpcrunchEntity;
 
 class EntityFieldsParserService
 {
-    const DATETIME_FORMAT = 'U.v';
+    public const DATETIME_FORMAT = 'U.v';
 
     public function parse(array $fields): array
     {
