@@ -18,7 +18,7 @@ class SuccessResponse extends HelpcrunchResponse
         parent::__construct($this->getSerializedData($responseData), $status);
     }
 
-    private function getSerializedData(array $responseData): array
+    protected function getSerializedData(array $responseData): array
     {
         return $this->createSerializer()->toArray($responseData, $this->getSerializationContext());
     }
