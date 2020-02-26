@@ -4,6 +4,7 @@ namespace Helpcrunch\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
 
 /**
@@ -16,6 +17,13 @@ abstract class HelpcrunchRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry, string $entityClass)
     {
         parent::__construct($registry, $entityClass);
+    }
+
+    public function setEntityManager(EntityManagerInterface $entityManager): self
+    {
+        $this->_em = $entityManager;
+
+        return $this;
     }
 
     /**
