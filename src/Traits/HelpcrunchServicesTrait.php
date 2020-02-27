@@ -14,8 +14,6 @@ use Helpcrunch\Service\TokenValidationService;
 
 /**
  * @property object container
- *
- * @mixin AbstractDefaultEntitiesHelper
  */
 trait HelpcrunchServicesTrait
 {
