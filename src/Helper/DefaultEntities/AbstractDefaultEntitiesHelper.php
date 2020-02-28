@@ -31,6 +31,8 @@ abstract class AbstractDefaultEntitiesHelper
 
     public function create(): void
     {
+        $this->entityManager = $this->container->get('doctrine')->getEntityManager();
+
         foreach (static::getEntitiesData() as $entityData) {
             if (!class_exists(static::$entityClass)) {
                 return;
