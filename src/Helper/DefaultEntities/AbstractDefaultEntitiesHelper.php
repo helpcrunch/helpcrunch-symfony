@@ -2,15 +2,12 @@
 
 namespace Helpcrunch\Helper\DefaultEntities;
 
-use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractDefaultEntitiesHelper
 {
-    use HelpcrunchServicesTrait;
-
     /**
      * @var string
      */
@@ -26,14 +23,16 @@ abstract class AbstractDefaultEntitiesHelper
      */
     private $entityManager;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, EntityManagerInterface $entityManager)
     {
         $this->container = $container;
-        $this->entityManager = $this->getEntityManager();
+        $this->entityManager = $entityManager;
     }
 
     public function create(): void
     {
+        $this->entityManager = $this->container->get('doctrine')->getEntityManager();
+
         foreach (static::getEntitiesData() as $entityData) {
             if (!class_exists(static::$entityClass)) {
                 return;
