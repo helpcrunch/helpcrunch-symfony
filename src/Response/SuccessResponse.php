@@ -2,43 +2,24 @@
 
 namespace Helpcrunch\Response;
 
-use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerBuilder;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Helpcrunch\Traits\JsonSerializerTrait;
 
-class SuccessResponse extends JsonResponse
+class SuccessResponse extends HelpcrunchResponse
 {
-    public function __construct($data = [], $message = null, int $status = self::HTTP_OK)
-    {
-        if (!is_array($data)) {
-            $data = ['data' => $data];
-        }
-        $responseData = $data;
-        if ($message) {
-            $responseData['message'] = $message;
-        }
-        $responseData['success'] = true;
+    use JsonSerializerTrait;
 
-        parent::__construct($this->serialize($responseData), $status);
+    public function __construct($data = null, $message = null, int $status = self::HTTP_OK)
+    {
+        $responseData['data'] = $data;
+        if ($message) {
+            $responseData['message'] = $this->getMessage($message);
+        }
+
+        parent::__construct($this->getSerializedData($responseData), $status);
     }
 
-    protected function serialize(array $responseData): array
+    protected function getSerializedData(array $responseData): array
     {
-        /** @var Serializer $serializer */
-        $serializer = SerializerBuilder::create()
-            ->setPropertyNamingStrategy(
-                new SerializedNameAnnotationStrategy(
-                    new IdenticalPropertyNamingStrategy()
-                )
-            )
-            ->build();
-
-        $context = new SerializationContext();
-        $context->setSerializeNull(true);
-
-        return $serializer->toArray($responseData, $context);
+        return $this->createSerializer()->toArray($responseData, $this->getSerializationContext());
     }
 }

@@ -7,6 +7,7 @@ use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Event\CreateTokenEvent;
 use Helpcrunch\Annotation\UnauthorizedAction;
 use Helpcrunch\Authentication;
+use Helpcrunch\Response\InnerErrorCodes;
 use Helpcrunch\Service\AbstractTokenAuthService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -60,7 +61,7 @@ class TokenAuthSubscriber implements EventSubscriberInterface
             $event->setController(function () {
                 return new ErrorResponse(
                     'Not authorized',
-                    ErrorResponse::HTTP_UNAUTHORIZED,
+                    InnerErrorCodes::UNAUTHORIZED,
                     ErrorResponse::HTTP_UNAUTHORIZED
                 );
             });

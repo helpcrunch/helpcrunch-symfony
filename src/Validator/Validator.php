@@ -6,6 +6,7 @@ use DateTime;
 use Helpcrunch\Entity\DateTimeFilteredInterface;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Exception\ValidationException;
+use Helpcrunch\Service\EntityFieldsParserService;
 use Helpcrunch\Traits\HelpcrunchServicesTrait;
 use Helpcrunch\Validator\Constraints\UniqueValue;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -140,7 +141,7 @@ final class Validator
                     $date = new DateTime();
                     $date->setTimestamp($value);
                 } else {
-                    $date = new DateTime($value);
+                    $date = DateTime::createFromFormat(EntityFieldsParserService::DATETIME_FORMAT, $value);
                 }
 
                 $data[$key] = $date;

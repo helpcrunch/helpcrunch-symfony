@@ -2,9 +2,7 @@
 
 namespace Helpcrunch\Response;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-class ErrorResponse extends JsonResponse
+class ErrorResponse extends HelpcrunchResponse
 {
     const DEFAULT_ERROR_HEADERS = [
         'Access-Control-Allow-Origin' => '*'
@@ -12,10 +10,7 @@ class ErrorResponse extends JsonResponse
 
     public function __construct($message, string $innerErrorCode = null, int $status = self::HTTP_BAD_REQUEST, $errors = [])
     {
-        $responseData = [
-            'message' => $message,
-            'success' => false,
-        ];
+        $responseData['message'] = $this->getMessage($message);
         if ($innerErrorCode) {
             $responseData['code'] = $innerErrorCode;
         }

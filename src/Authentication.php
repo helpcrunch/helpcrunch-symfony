@@ -3,6 +3,8 @@
 namespace Helpcrunch;
 
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\MobileUserAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecificationInterface;
 use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
@@ -12,6 +14,7 @@ use Helpcrunch\Service\AbstractTokenAuthService;
 use Helpcrunch\Service\TokenAuthService\AutoLoginAuthService;
 use Helpcrunch\Service\TokenAuthService\DeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
+use Helpcrunch\Service\TokenAuthService\MobileDeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileUserAuthService;
 use Helpcrunch\Service\TokenAuthService\OrganizationAuthService;
 use Helpcrunch\Service\TokenAuthService\ProductAuthService;
@@ -23,19 +26,21 @@ use Symfony\Component\HttpFoundation\Request;
 final class Authentication
 {
     const AUTHENTICATED_AS_DESKTOP_USER = UserAuthSpecification::class;
-    const AUTHENTICATED_AS_MOBILE_USER = UserAuthSpecification::class;
-    const AUTHENTICATED_AS_DEVICE = DeviceAuthSpecification::class;
+    const AUTHENTICATED_AS_MOBILE_USER = MobileUserAuthSpecification::class;
+    const AUTHENTICATED_AS_DESKTOP_DEVICE = DeviceAuthSpecification::class;
+    const AUTHENTICATED_AS_MOBILE_DEVICE = MobileDeviceAuthSpecification::class;
     const AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY = PublicApiAuthSpecification::class;
     const AUTHENTICATED_AS_INTERNAL_APP = InternalAppAuthSpecification::class;
     const AUTHENTICATED_AS_AUTO_LOGIN = AutoLoginAuthSpecification::class;
     const AUTHENTICATED_ROLES = [
         MobileUserAuthService::class => self::AUTHENTICATED_AS_MOBILE_USER,
         UserAuthService::class => self::AUTHENTICATED_AS_DESKTOP_USER,
-        DeviceAuthService::class => self::AUTHENTICATED_AS_DEVICE,
+        MobileDeviceAuthService::class => self::AUTHENTICATED_AS_MOBILE_DEVICE,
+        DeviceAuthService::class => self::AUTHENTICATED_AS_DESKTOP_DEVICE,
         OrganizationAuthService::class => self::AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY,
         InternalAppAuthService::class => self::AUTHENTICATED_AS_INTERNAL_APP,
         AutoLoginAuthService::class => self::AUTHENTICATED_AS_AUTO_LOGIN,
-        ProductAuthService::class => self::AUTHENTICATED_AS_DEVICE,
+        ProductAuthService::class => self::AUTHENTICATED_AS_DESKTOP_DEVICE,
     ];
 
     /**
@@ -138,7 +143,14 @@ final class Authentication
 
     public static function isAuthenticatedAsDevice(): bool
     {
-        return self::$authenticatedAs == self::AUTHENTICATED_AS_DEVICE;
+        return (self::$authenticatedAs == self::AUTHENTICATED_AS_DESKTOP_DEVICE) ||
+            (self::$authenticatedAs == self::AUTHENTICATED_AS_MOBILE_DEVICE);
+    }
+
+    public static function isAuthenticatedAsMobile(): bool
+    {
+        return (self::$authenticatedAs == self::AUTHENTICATED_AS_MOBILE_USER) ||
+            (self::$authenticatedAs == self::AUTHENTICATED_AS_MOBILE_DEVICE);
     }
 
     public static function isAuthenticatedAsOrganizationPublicKey(): bool

@@ -27,6 +27,6 @@ class ValidationException extends HelpcrunchException
 
     public function getData(): array
     {
-        return $this->validationErrors;
+        return array_merge(['info' => self::MESSAGE], $this->validationErrors);
     }
 }

@@ -6,6 +6,7 @@ use Detection\MobileDetect;
 use Helpcrunch\Service\TokenAuthService\AutoLoginAuthService;
 use Helpcrunch\Service\TokenAuthService\DeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
+use Helpcrunch\Service\TokenAuthService\MobileDeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileUserAuthService;
 use Helpcrunch\Service\TokenAuthService\OrganizationAuthService;
 use Helpcrunch\Service\TokenAuthService\ProductAuthService;
@@ -60,7 +61,11 @@ class TokenAuthServiceFactory
         }
 
         if (preg_match('/^Bearer device="(?P<device>\S+?)"\s+secret="(?P<secret>\S+?)"$/i', $authHeader, $matches)) {
-            return $this->createDeviceAuthHandler($matches);
+            if (self::checkIsMobile()) {
+                return $this->createMobileDeviceAuthHandler($matches);
+            }
+
+            return $this->createDesktopDeviceAuthHandler($matches);
         }
 
         if (preg_match('/^Bearer product="(?P<product>\S+?)"\s+secret="(?P<secret>\S+?)"$/i', $authHeader, $matches)) {
@@ -97,12 +102,22 @@ class TokenAuthServiceFactory
         return $tokenHandler;
     }
 
-    private function createDeviceAuthHandler(array $matches): DeviceAuthService
+    private function createDesktopDeviceAuthHandler(array $matches): DeviceAuthService
+    {
+        return $this->createDeviceAuthHandler(DeviceAuthService::class, $matches['device'], $matches['secret']);
+    }
+
+    private function createMobileDeviceAuthHandler(array $matches): DeviceAuthService
+    {
+        return $this->createDeviceAuthHandler(MobileDeviceAuthService::class, $matches['device'], $matches['secret']);
+    }
+
+    private function createDeviceAuthHandler(string $deviceAuthService, int $deviceId, string $token): DeviceAuthService
     {
         /** @var DeviceAuthService $tokenHandler */
-        $tokenHandler = $this->container->get(DeviceAuthService::class);
-        $tokenHandler->setDeviceId($matches['device']);
-        $tokenHandler->setToken($matches['secret']);
+        $tokenHandler = $this->container->get($deviceAuthService);
+        $tokenHandler->setDeviceId($deviceId);
+        $tokenHandler->setToken($token);
 
         return $tokenHandler;
     }
