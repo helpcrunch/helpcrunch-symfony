@@ -10,7 +10,12 @@ class SuccessResponse extends HelpcrunchResponse
 
     public function __construct($data = null, $message = null, int $status = self::HTTP_OK)
     {
-        $responseData['data'] = $data;
+        if (empty($data['data'])) {
+            $responseData['data'] = $data;
+        } else {
+            $responseData = $data;
+        }
+        
         if ($message) {
             $responseData['message'] = $this->getMessage($message);
         }
