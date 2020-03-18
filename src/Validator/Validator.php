@@ -142,6 +142,9 @@ final class Validator
                     $date->setTimestamp($value);
                 } else {
                     $date = DateTime::createFromFormat(EntityFieldsParserService::DATETIME_FORMAT, $value);
+                    if (!$date) {
+                        $date = new DateTime();
+                    }
                 }
 
                 $data[$key] = $date;
