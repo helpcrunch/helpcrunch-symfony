@@ -2,13 +2,25 @@
 
 namespace Helpcrunch\Helper;
 
-use Helpcrunch\Exception\HelpcrunchException;
-use \Raven_Client;
+use Raven_Client;
+use Throwable;
 
 class SentryHelper
 {
     /**
-     * @var \Raven_Client
+     * List of excluded exceptions from sentry
+     */
+    const EXCLUDED_EXCEPTIONS = [
+        'GuzzleHttp\Exception\ConnectException',
+        'GuzzleHttp\Exception\ClientException',
+        'Doctrine\DBAL\Exception\ConstraintViolationException',
+        'Helpcrunch\Exception\HelpcrunchException',
+        'Symfony\Component\HttpKernel\Exception\NotFoundHttpException',
+        'Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException'
+    ];
+
+    /**
+     * @var Raven_Client
      */
     private static $ravenClient;
 
@@ -35,12 +47,23 @@ class SentryHelper
         if (is_array($message) || is_object($message)) {
             $message = json_encode($message);
         }
-        self::$ravenClient->captureMessage($message, ['log'], ['level' => \Raven_Client::DEBUG]);
+        self::$ravenClient->captureMessage($message, ['log'], ['level' => Raven_Client::DEBUG]);
+    }
+
+    protected static function isExcluded(Throwable $exception): bool
+    {
+        foreach (self::EXCLUDED_EXCEPTIONS as $excluded) {
+            if($exception instanceof $excluded) {
+                return true;
+            }
+        }
+
+        return  false;
     }
 
     public static function logException($exception): void
     {
-        if (!self::$ravenClient || ($exception instanceof HelpcrunchException)) {
+        if (!self::$ravenClient || self::isExcluded($exception)) {
             return;
         }
 
