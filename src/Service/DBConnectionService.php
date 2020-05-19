@@ -63,6 +63,9 @@ class DBConnectionService
         if ($dataBaseName) {
             $params['dbname'] = $dataBaseName;
         }
+        if ($dataBaseName == 'tribute') {
+            $params['host'] = '176.9.7.240';
+        }
         if ($password = $this->entityManager->getConnection()->getPassword()) {
             $params['password'] = $password;
         }
