@@ -3,6 +3,7 @@
 namespace Helpcrunch;
 
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\JwtAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileUserAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecificationInterface;
@@ -14,6 +15,7 @@ use Helpcrunch\Service\AbstractTokenAuthService;
 use Helpcrunch\Service\TokenAuthService\AutoLoginAuthService;
 use Helpcrunch\Service\TokenAuthService\DeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
+use Helpcrunch\Service\TokenAuthService\JWTAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileDeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileUserAuthService;
 use Helpcrunch\Service\TokenAuthService\OrganizationAuthService;
@@ -29,6 +31,7 @@ final class Authentication
     const AUTHENTICATED_AS_MOBILE_USER = MobileUserAuthSpecification::class;
     const AUTHENTICATED_AS_DESKTOP_DEVICE = DeviceAuthSpecification::class;
     const AUTHENTICATED_AS_MOBILE_DEVICE = MobileDeviceAuthSpecification::class;
+    const AUTHENTICATED_AS_JWT = JwtAuthSpecification::class;
     const AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY = PublicApiAuthSpecification::class;
     const AUTHENTICATED_AS_INTERNAL_APP = InternalAppAuthSpecification::class;
     const AUTHENTICATED_AS_AUTO_LOGIN = AutoLoginAuthSpecification::class;
@@ -36,6 +39,7 @@ final class Authentication
         MobileUserAuthService::class => self::AUTHENTICATED_AS_MOBILE_USER,
         UserAuthService::class => self::AUTHENTICATED_AS_DESKTOP_USER,
         MobileDeviceAuthService::class => self::AUTHENTICATED_AS_MOBILE_DEVICE,
+        JWTAuthService::class => self::AUTHENTICATED_AS_JWT,
         DeviceAuthService::class => self::AUTHENTICATED_AS_DESKTOP_DEVICE,
         OrganizationAuthService::class => self::AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY,
         InternalAppAuthService::class => self::AUTHENTICATED_AS_INTERNAL_APP,

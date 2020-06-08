@@ -1,9 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Helpcrunch\Service\TokenAuthService;
 
 use Helpcrunch\Service\AbstractTokenAuthService;
 
+/**
+ * Class DeviceAuthService
+ *
+ * @package Helpcrunch\Service\TokenAuthService
+ */
 class DeviceAuthService extends AbstractTokenAuthService
 {
     const DEVICE_TOKEN_LENGTH = 64;

@@ -2,10 +2,10 @@
 
 namespace Helpcrunch\Service;
 
-use Detection\MobileDetect;
 use Helpcrunch\Service\TokenAuthService\AutoLoginAuthService;
 use Helpcrunch\Service\TokenAuthService\DeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\InternalAppAuthService;
+use Helpcrunch\Service\TokenAuthService\JWTAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileDeviceAuthService;
 use Helpcrunch\Service\TokenAuthService\MobileUserAuthService;
 use Helpcrunch\Service\TokenAuthService\OrganizationAuthService;
@@ -80,7 +80,20 @@ class TokenAuthServiceFactory
             return $this->createInternalAppAuthHandler($matches);
         }
 
+        if(preg_match('/^Bearer (?P<token>\S+?)$/i', $authHeader, $matches)) {
+            return $this->createJWTAuthHandler($matches['token']);
+        }
+
         return null;
+    }
+
+    private function createJWTAuthHandler(string $token): JWTAuthService
+    {
+        /** @var JWTAuthService $tokenHandler */
+        $tokenHandler = $this->container->get(JWTAuthService::class);
+        $tokenHandler->setToken($token);
+
+        return $tokenHandler;
     }
 
     private function createUserAuthHandler(array $matches): UserAuthService
