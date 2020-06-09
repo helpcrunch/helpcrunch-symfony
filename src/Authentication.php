@@ -3,14 +3,14 @@
 namespace Helpcrunch;
 
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\JwtAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileUserAuthSpecification;
-use Helpcrunch\Annotation\AuthSpecificationInterface;
-use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
-use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\PublicApiAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecificationInterface;
 use Helpcrunch\Service\AbstractTokenAuthService;
 use Helpcrunch\Service\TokenAuthService\AutoLoginAuthService;
 use Helpcrunch\Service\TokenAuthService\DeviceAuthService;
@@ -136,6 +136,14 @@ final class Authentication
 
     private static function setAuthenticatedAs(): void
     {
+        if(self::$tokenHandler instanceof JWTAuthService) {
+            if(TokenAuthServiceFactory::checkIsMobile()) {
+                self::$authenticatedAs = self::AUTHENTICATED_AS_MOBILE_DEVICE;
+                return;
+            }
+            self::$authenticatedAs = self::AUTHENTICATED_AS_DESKTOP_DEVICE;
+            return;
+        }
         self::$authenticatedAs = self::AUTHENTICATED_ROLES[get_class(self::$tokenHandler)];
     }
 

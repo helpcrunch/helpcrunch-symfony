@@ -5,6 +5,7 @@ namespace Helpcrunch\Service\TokenAuthService;
 use BadMethodCallException;
 use Helpcrunch\Auth\AuthInterface;
 use Helpcrunch\Auth\Exceptions\InvalidTokenException;
+use Helpcrunch\Auth\ParsedToken;
 use Helpcrunch\Service\AbstractTokenAuthService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,6 +23,11 @@ class JWTAuthService extends AbstractTokenAuthService
     protected $auth;
 
     /**
+     * @var ParsedToken
+     */
+    protected $parsedToken;
+
+    /**
      * JWTAuthService constructor.
      *
      */
@@ -37,12 +43,20 @@ class JWTAuthService extends AbstractTokenAuthService
     public function isTokenValid(): bool
     {
         try {
-            $parsedToken = $this->auth->parse($this->token);
+            $this->parsedToken = $this->auth->parse($this->token);
 
-            return $parsedToken->validate();
+            return $this->parsedToken->validate();
         } catch (InvalidTokenException $exception) {
             return false;
         }
+    }
+
+    /**
+     * Returns instance of token
+     */
+    public function getParsedToken(): ParsedToken
+    {
+        return $this->parsedToken;
     }
 
     /**

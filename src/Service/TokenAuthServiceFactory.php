@@ -182,7 +182,7 @@ class TokenAuthServiceFactory
         return $tokenHandler;
     }
 
-    private static function checkIsMobile(): bool
+    public static function checkIsMobile(): bool
     {
         $detect = new \Mobile_Detect();
 
