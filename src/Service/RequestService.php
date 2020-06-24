@@ -43,7 +43,10 @@ abstract class RequestService
         $this->schema = $schema;
         $this->domain = $domain;
 
-        $this->client = new Client(['headers' => $this->setHeaders()]);
+        $this->client = new Client([
+            'verify' => false,
+            'headers' => $this->setHeaders(),
+        ]);
     }
 
     public function getClient(): Client
