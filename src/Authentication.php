@@ -8,6 +8,7 @@ use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\JwtAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileUserAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\ApplicationAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\PublicApiAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecificationInterface;
@@ -35,6 +36,7 @@ final class Authentication
     const AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY = PublicApiAuthSpecification::class;
     const AUTHENTICATED_AS_INTERNAL_APP = InternalAppAuthSpecification::class;
     const AUTHENTICATED_AS_AUTO_LOGIN = AutoLoginAuthSpecification::class;
+    const AUTHENTICATED_AS_APPLICATION = ApplicationAuthSpecification::class;
     const AUTHENTICATED_ROLES = [
         MobileUserAuthService::class => self::AUTHENTICATED_AS_MOBILE_USER,
         UserAuthService::class => self::AUTHENTICATED_AS_DESKTOP_USER,
@@ -44,7 +46,7 @@ final class Authentication
         OrganizationAuthService::class => self::AUTHENTICATED_AS_ORGANIZATION_PUBLIC_KEY,
         InternalAppAuthService::class => self::AUTHENTICATED_AS_INTERNAL_APP,
         AutoLoginAuthService::class => self::AUTHENTICATED_AS_AUTO_LOGIN,
-        ProductAuthService::class => self::AUTHENTICATED_AS_DESKTOP_DEVICE,
+        ProductAuthService::class => self::AUTHENTICATED_AS_APPLICATION,
     ];
 
     /**
@@ -163,6 +165,11 @@ final class Authentication
     {
         return (self::$authenticatedAs == self::AUTHENTICATED_AS_MOBILE_USER) ||
             (self::$authenticatedAs == self::AUTHENTICATED_AS_MOBILE_DEVICE);
+    }
+
+    public static function isAuthenticatedAsApplication(): bool
+    {
+        return self::$authenticatedAs == self::AUTHENTICATED_AS_APPLICATION;
     }
 
     public static function isAuthenticatedAsOrganizationPublicKey(): bool
