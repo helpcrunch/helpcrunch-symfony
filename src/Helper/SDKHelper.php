@@ -2,7 +2,6 @@
 
 namespace Helpcrunch\Helper;
 
-use Helpcrunch\Authentication;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,7 +22,7 @@ class SDKHelper
 
     public static function isSdk(): bool
     {
-        return Authentication::isAuthenticatedAsMobile() && !empty(self::getHeader(self::SDK_VERSION_HEADER_KEY));
+        return !empty(self::getHeader(self::SDK_VERSION_HEADER_KEY));
     }
 
     public static function isLightResponse(): bool
