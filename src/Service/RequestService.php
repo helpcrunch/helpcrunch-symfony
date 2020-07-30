@@ -12,6 +12,8 @@ abstract class RequestService
     const DEFAULT_DOMAIN = 'api';
     const ENDPOINTS_PREFIX = '/api';
 
+    const DEFAULT_IP_PROTOCOL = 'v4';
+
     /**
      * @var Client
      */
@@ -45,7 +47,7 @@ abstract class RequestService
 
         $this->client = new Client([
             'verify' => false,
-            'headers' => $this->setHeaders(),
+            'headers' => $this->getHeaders(),
         ]);
     }
 
@@ -136,7 +138,11 @@ abstract class RequestService
         string $endpoint,
         array $options = []
     ): ResponseInterface {
-        $response = $this->client->request($method, $this->getUrl($organizationDomain, $endpoint), $options);
+        $response = $this->client->request(
+            $method,
+            $this->getUrl($organizationDomain, $endpoint),
+            $this->getOptions($options)
+        );
 
         return $response;
     }
@@ -146,11 +152,18 @@ abstract class RequestService
         return $this->schema . $organizationDomain . '.' . $this->domain . static::$endpointsPrefix . $endpoint;
     }
 
-    protected function setHeaders(): array
+    protected function getHeaders(): array
     {
         return [
             'Authorization' => 'Bearer helpcrunch-service="' . $this->key . '"',
             'Content-Type' => 'application/json'
         ];
+    }
+
+    protected function getOptions(array $options): array
+    {
+        return [
+            RequestOptions::FORCE_IP_RESOLVE => self::DEFAULT_IP_PROTOCOL,
+        ] + $options;
     }
 }
