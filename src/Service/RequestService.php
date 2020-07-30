@@ -44,6 +44,7 @@ abstract class RequestService
         $this->domain = $domain;
 
         $this->client = new Client([
+            'curl' => [CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false],
             'verify' => false,
             'headers' => $this->setHeaders(),
         ]);

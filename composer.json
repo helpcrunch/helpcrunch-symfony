@@ -8,6 +8,7 @@
     "ext-zmq": "*",
     "ext-redis": "*",
     "ext-memcached": "*",
+    "ext-curl": "*",
     "friendsofsymfony/rest-bundle": "^2.3",
     "php": ">=7.2",
     "sentry/sentry": "^1.8",

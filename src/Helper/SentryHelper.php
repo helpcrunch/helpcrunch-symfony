@@ -11,6 +11,7 @@ class SentryHelper
      * List of excluded exceptions from sentry
      */
     const EXCLUDED_EXCEPTIONS = [
+        'LogicException',
         'GuzzleHttp\Exception\ConnectException',
         'GuzzleHttp\Exception\ClientException',
         'Doctrine\DBAL\Exception\ConstraintViolationException',
