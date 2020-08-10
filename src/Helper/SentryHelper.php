@@ -25,7 +25,7 @@ class SentryHelper
      */
     private static $ravenClient;
 
-    public static function install(string $ravenUrl = null): void
+    public static function install(string $ravenUrl = null, array $options = []): void
     {
         if (!$ravenUrl) {
             if (!empty($_SERVER['RAVEN_URL'])) {
@@ -35,8 +35,8 @@ class SentryHelper
             }
         }
 
-        self::$ravenClient = new Raven_Client($ravenUrl);
-        self::$ravenClient->install($ravenUrl);
+        self::$ravenClient = new Raven_Client($ravenUrl, $options);
+        self::$ravenClient->install();
     }
 
     public static function log($message): void
