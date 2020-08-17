@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Service;
 
+use App\Service\ShutdownManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
@@ -37,7 +38,9 @@ class DBConnectionService
 
     public function close(): void
     {
-        $this->connection->close();
+        if ($this->connection->isConnected()) {
+            $this->connection->close();
+        }
     }
 
     public function createDatabase(string $dataBaseName, Connection $connection = null): void
@@ -74,6 +77,10 @@ class DBConnectionService
             $this->entityManager->getConfiguration(),
             $this->entityManager->getEventManager()
         );
+
+        ShutdownManager::register(function () {
+            $this->close();
+        });
 
         return $this->connection;
     }

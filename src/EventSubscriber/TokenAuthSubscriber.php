@@ -3,6 +3,7 @@
 namespace Helpcrunch\EventSubscriber;
 
 use Helpcrunch\Controller\HelpcrunchController;
+use Helpcrunch\Helper\SDKHelper;
 use Helpcrunch\Response\ErrorResponse;
 use Helpcrunch\Event\CreateTokenEvent;
 use Helpcrunch\Annotation\UnauthorizedAction;
@@ -66,6 +67,8 @@ class TokenAuthSubscriber implements EventSubscriberInterface
                 );
             });
         }
+
+        SDKHelper::initialize($event->getRequest());
     }
 
     /**

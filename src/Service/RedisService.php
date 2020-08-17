@@ -2,6 +2,7 @@
 
 namespace Helpcrunch\Service;
 
+use App\Service\ShutdownManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RedisService
@@ -31,6 +32,12 @@ class RedisService
 
     public function connect(string $host = null, int $port = null): bool
     {
+        ShutdownManager::register(function () {
+            if ($this->redis->isConnected()) {
+                $this->redis->close();
+            }
+        });
+
         return $this->redis->connect(
             $host ?? $this->container->getParameter('redis_host'),
             $port ?? $this->container->getParameter('redis_port')

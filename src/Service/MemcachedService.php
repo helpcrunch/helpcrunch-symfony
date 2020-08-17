@@ -2,8 +2,9 @@
 
 namespace Helpcrunch\Service;
 
+use App\Service\ShutdownManager;
 use Exception;
-use \Memcached;
+use Memcached;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
 class MemcachedService
@@ -21,6 +22,11 @@ class MemcachedService
     public function __construct(string $memcachedConnection)
     {
         $this->memcached = MemcachedAdapter::createConnection($memcachedConnection);
+        ShutdownManager::register(function () {
+            if($this->memcached) {
+                $this->memcached->quit();
+            }
+        });
     }
 
     /**
