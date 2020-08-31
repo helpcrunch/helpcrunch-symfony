@@ -7,6 +7,7 @@ use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
+use Helpcrunch\Annotation\AuthSpecification\MobileUserAuthSpecification;
 use Helpcrunch\Entity\HelpcrunchEntity;
 use Helpcrunch\Helper\ParametersValidatorHelper;
 use Helpcrunch\Repository\HelpcrunchRepository;
@@ -73,6 +74,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
     /**
      * @UserAuthSpecification()
+     * @MobileUserAuthSpecification()
      * @DeviceAuthSpecification()
      * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
@@ -90,6 +92,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
     /**
      * @UserAuthSpecification()
+     * @MobileUserAuthSpecification()
      * @DeviceAuthSpecification()
      * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
@@ -111,6 +114,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
     /**
      * @UserAuthSpecification()
+     * @MobileUserAuthSpecification()
      * @DeviceAuthSpecification()
      * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
@@ -146,6 +150,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
     /**
      * @UserAuthSpecification()
+     * @MobileUserAuthSpecification()
      * @DeviceAuthSpecification()
      * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
@@ -193,6 +198,7 @@ abstract class HelpcrunchController extends FOSRestController implements ClassRe
 
     /**
      * @UserAuthSpecification()
+     * @MobileUserAuthSpecification()
      * @DeviceAuthSpecification()
      * @MobileDeviceAuthSpecification()
      * @AutoLoginAuthSpecification()
