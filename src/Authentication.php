@@ -2,6 +2,7 @@
 
 namespace Helpcrunch;
 
+use Helpcrunch\Annotation\AuthSpecification\ApplicationAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\AutoLoginAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\DeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
