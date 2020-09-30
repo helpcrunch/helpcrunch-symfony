@@ -9,7 +9,6 @@ use Helpcrunch\Annotation\AuthSpecification\InternalAppAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\JwtAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileDeviceAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\MobileUserAuthSpecification;
-use Helpcrunch\Annotation\AuthSpecification\ApplicationAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\PublicApiAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecification\UserAuthSpecification;
 use Helpcrunch\Annotation\AuthSpecificationInterface;
