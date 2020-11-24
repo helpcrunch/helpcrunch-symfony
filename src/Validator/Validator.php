@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Time;
 use Symfony\Component\Validator\Constraints\DateTime as DateTimeRule;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 
 final class Validator
@@ -111,7 +112,9 @@ final class Validator
 
     private function validateData(HelpcrunchEntity $entity, array $rules, array $data): void
     {
-        $validation = Validation::createValidator();
+        $validation = Validation::createValidatorBuilder()
+            ->setConstraintValidatorFactory(new ContainerConstraintValidatorFactory($this->container))
+            ->getValidator();
         foreach ($rules as $field => $validationRules) {
             if ($entity->id && empty($data[$field])) {
                 continue;
