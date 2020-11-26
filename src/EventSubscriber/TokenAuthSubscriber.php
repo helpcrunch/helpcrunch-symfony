@@ -56,8 +56,9 @@ class TokenAuthSubscriber implements EventSubscriberInterface
         $action = $this->getActionName($event);
         Authentication::setContainer($this->container);
 
-        if (!Authentication::authorize($event->getRequest(), $this->getActionsAnnotations($controller, $action)) &&
-            !$this->checkUnauthorizedAnnotation($controller, $action)
+        if (
+            !$this->checkUnauthorizedAnnotation($controller, $action) &&
+            !Authentication::authorize($event->getRequest(), $this->getActionsAnnotations($controller, $action))
         ) {
             $event->setController(function () {
                 return new ErrorResponse(
