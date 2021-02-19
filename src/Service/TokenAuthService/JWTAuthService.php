@@ -3,37 +3,25 @@
 namespace Helpcrunch\Service\TokenAuthService;
 
 use BadMethodCallException;
-use Helpcrunch\Auth\AuthInterface;
 use Helpcrunch\Auth\Exceptions\InvalidTokenException;
-use Helpcrunch\Auth\ParsedToken;
+use Helpcrunch\Auth\Customers\Payload;
+use Helpcrunch\Auth\Customers\PayloadInterface;
+use Helpcrunch\Auth\ReaderInterface;
 use Helpcrunch\Service\AbstractTokenAuthService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * Class JWTAuthService
- *
- * @package Helpcrunch\Service\TokenAuthService
- */
-class JWTAuthService extends AbstractTokenAuthService
+final class JWTAuthService extends AbstractTokenAuthService
 {
-    /**
-     * @var AuthInterface
-     */
-    protected $auth;
+    /** @var ReaderInterface */
+    private $reader;
 
-    /**
-     * @var ParsedToken
-     */
-    protected $parsedToken;
+    /** @var PayloadInterface */
+    private $payload;
 
-    /**
-     * JWTAuthService constructor.
-     *
-     */
-    public function __construct(ContainerInterface $container, RequestStack $request = null)
+    public function __construct(ReaderInterface $reader, ContainerInterface $container, RequestStack $request = null)
     {
-        $this->auth = $container->get(AuthInterface::class);
+        $this->reader = $reader;
         parent::__construct($container, $request);
     }
 
@@ -43,25 +31,19 @@ class JWTAuthService extends AbstractTokenAuthService
     public function isTokenValid(): bool
     {
         try {
-            $this->parsedToken = $this->auth->parse($this->token);
+            $this->payload = $this->reader->read($this->token, Payload::class);
 
-            return $this->parsedToken->validate();
+            return true;
         } catch (InvalidTokenException $exception) {
             return false;
         }
     }
 
-    /**
-     * Returns instance of token
-     */
-    public function getParsedToken(): ParsedToken
+    public function getPayload(): ?PayloadInterface
     {
-        return $this->parsedToken;
+        return $this->payload;
     }
 
-    /**
-     * Generates the token
-     */
     public function generateToken(): string
     {
         throw new BadMethodCallException('Cannot generate the token for this auth provider.');

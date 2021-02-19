@@ -1,6 +1,6 @@
 {
   "name": "helpcrunch/helpcrunch-symfony",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "require": {
     "doctrine/doctrine-bundle": "*",
     "doctrine/orm": "*",
