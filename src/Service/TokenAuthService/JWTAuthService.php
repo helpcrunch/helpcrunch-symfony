@@ -4,8 +4,7 @@ namespace Helpcrunch\Service\TokenAuthService;
 
 use BadMethodCallException;
 use Helpcrunch\Auth\Exceptions\InvalidTokenException;
-use Helpcrunch\Auth\Customers\Payload;
-use Helpcrunch\Auth\Customers\PayloadInterface;
+use Helpcrunch\Auth\Payload;
 use Helpcrunch\Auth\ReaderInterface;
 use Helpcrunch\Service\AbstractTokenAuthService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,7 +15,7 @@ final class JWTAuthService extends AbstractTokenAuthService
     /** @var ReaderInterface */
     private $reader;
 
-    /** @var PayloadInterface */
+    /** @var Payload|null */
     private $payload;
 
     public function __construct(ReaderInterface $reader, ContainerInterface $container, RequestStack $request = null)
@@ -31,15 +30,14 @@ final class JWTAuthService extends AbstractTokenAuthService
     public function isTokenValid(): bool
     {
         try {
-            $this->payload = $this->reader->read($this->token, Payload::class);
-
+            $this->payload = $this->reader->read($this->token);
             return true;
         } catch (InvalidTokenException $exception) {
             return false;
         }
     }
 
-    public function getPayload(): ?PayloadInterface
+    public function getPayload(): ?Payload
     {
         return $this->payload;
     }
