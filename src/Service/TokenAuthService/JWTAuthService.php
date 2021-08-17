@@ -4,7 +4,7 @@ namespace Helpcrunch\Service\TokenAuthService;
 
 use BadMethodCallException;
 use Helpcrunch\Auth\Exceptions\InvalidTokenException;
-use Helpcrunch\Auth\Payload;
+use Helpcrunch\Protobuf\Auth\Payload;
 use Helpcrunch\Auth\ReaderInterface;
 use Helpcrunch\Service\AbstractTokenAuthService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
