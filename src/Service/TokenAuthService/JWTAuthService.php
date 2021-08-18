@@ -3,6 +3,8 @@
 namespace Helpcrunch\Service\TokenAuthService;
 
 use BadMethodCallException;
+use Helpcrunch\Auth\Encryption\Exceptions\CouldNotDecryptToken;
+use Helpcrunch\Auth\Encryption\Exceptions\InvalidTokenException as EncryptionInvalidTokenException;
 use Helpcrunch\Auth\Exceptions\InvalidTokenException;
 use Helpcrunch\Protobuf\Auth\Payload;
 use Helpcrunch\Auth\ReaderInterface;
@@ -32,7 +34,7 @@ final class JWTAuthService extends AbstractTokenAuthService
         try {
             $this->payload = $this->reader->read($this->token);
             return true;
-        } catch (InvalidTokenException $exception) {
+        } catch (InvalidTokenException | CouldNotDecryptToken | EncryptionInvalidTokenException $exception) {
             return false;
         }
     }
