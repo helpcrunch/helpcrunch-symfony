@@ -17,6 +17,10 @@ class InternalAppAuthService extends AbstractTokenAuthService
 
     public function isTokenValid(): bool
     {
+        if (!$this->token) {
+            return false;
+        }
+
         return $this->token === $this->getRedisService()->getData(self::INTERNAL_APP_TOKEN_KEY);
     }
 
