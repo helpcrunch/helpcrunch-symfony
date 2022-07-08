@@ -1,22 +1,7 @@
 {
   "name": "helpcrunch/helpcrunch-symfony",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "require": {
-    "doctrine/doctrine-bundle": "*",
-    "doctrine/orm": "*",
-    "doctrine/persistence": "*",
-    "ext-json": "*",
-    "ext-zmq": "*",
-    "ext-redis": "*",
-    "ext-memcached": "*",
-    "ext-curl": "*",
-    "friendsofsymfony/rest-bundle": "^2.3",
-    "php": ">=7.2",
-    "symfony/form": "*",
-    "symfony/validator": "*",
-    "guzzlehttp/guzzle": "^6.3",
-    "mobiledetect/mobiledetectlib": "^2.8",
-    "symfony/expression-language": "^4.1",
-    "predis/predis": "^1.1"
+    "php": ">=7.2"
   }
 }
