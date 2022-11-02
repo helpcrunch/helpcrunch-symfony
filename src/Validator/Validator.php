@@ -140,7 +140,9 @@ final class Validator
 
             $rule = reset($validationRules[$key]);
             if (($rule instanceof DateTimeRule) || ($rule instanceof Time)) {
-                if (is_int($value)) {
+                if ($value instanceof DateTime) {
+                    $date = $value;
+                } elseif (is_int($value)) {
                     $date = new DateTime();
                     $date->setTimestamp($value);
                 } else {
